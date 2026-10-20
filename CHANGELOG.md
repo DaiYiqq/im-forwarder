@@ -8,25 +8,56 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Added
-- 繁體中文 README (`README.zh-TW.md`) — fourth language (community-maintained).
-- English translations of the long-form documents in `docs/en/`: `COMPLIANCE.en.md`,
-  `ROUTING.en.md`, `GATEWAY-CONTRACT.en.md`, `CONSENT-FLOW.en.md`, `OPERATIONS.en.md`,
-  plus an English audit summary (`AUDIT.en.md`).
-- Repository governance: GitHub Discussions, branch protection (required CI check
-  `typecheck / compliance-scan / test`, 1 approving review, linear history, no force-push/deletion),
-  private vulnerability reporting.
-
-### Changed
-- `README.md` is now **Simplified Chinese** (canonical, and the version GitHub displays).
-  English moved to `README.en.md`; `README.zh-CN.md` was removed.
-- `TRANSLATIONS.md`, `GOVERNANCE.md` and `CONTRIBUTING.md` updated for the new canonical language
-  (Simplified Chinese) and the four-language layout.
-- Chinese long-form docs now carry a bilingual header linking to their English translations.
-
 ### Planned
 - Optional plain-text prefix per route (opt-in, off by default) — pending RFC.
 - Additional languages (한국어 / Deutsch / Español) — see [TRANSLATIONS.md](TRANSLATIONS.md).
+- Code signing for Windows/macOS deliverables (currently unsigned, see docs/INSTALL.md).
+
+## [0.2.0] - 2026-10-20
+
+Desktop installers for Windows/macOS/Linux, a mobile companion app (PWA + Android APK),
+an experimental on-device foreground mode for Android, and the four-language documentation set.
+
+### Added
+- **Desktop app** (`apps/desktop`, Electron): tray-resident host that runs the existing core in a
+  sandboxed `utilityProcess`, with a configuration editor (strict schema + preflight validation),
+  status/logs/compliance panels, encrypted token storage via `safeStorage`, and no message content
+  anywhere in the UI.
+- **Companion HTTP API** (desktop, default `127.0.0.1:17871`): pairing code → bearer token,
+  `status / control / routes (sanitized) / logs (whitelisted metadata)`; LAN mode is opt-in and
+  clearly warned; config editing stays desktop-only.
+- **Mobile companion** (`apps/companion-web`): shared PWA served by the desktop app
+  ("add to home screen"), plus an Android WebView shell (`apps/mobile`, Capacitor).
+- **Android experimental on-device mode**: foreground-only forwarding in the WebView, restricted to
+  text-only, private-chat-only, self-owned WeChat↔QQ routes; refuses Telegram/third-party/group/media;
+  stops immediately on backgrounding; gateway token kept in memory only.
+- **iOS project skeleton** (`apps/mobile/ios`) with build instructions; no IPA is published
+  (iOS cannot run a persistent forwarding daemon and no Apple signing identity is available).
+- **Release pipeline** (`.github/workflows/release.yml`): Windows NSIS + portable, macOS universal
+  dmg + zip, Linux AppImage + deb, Android debug APK, `SHA256SUMS.txt`, GitHub Release on `v*` tags.
+- `docs/INSTALL.md` / `docs/en/INSTALL.en.md`: install, first-run, unsigned-build guidance,
+  mobile pairing, Android sideload, iOS build notes, uninstall.
+
+### Documentation & governance
+- `README.md` is now **Simplified Chinese** (canonical, GitHub default); English moved to
+  `README.en.md`; `README.zh-CN.md` removed; **繁體中文 added** (`README.zh-TW.md`) as the fourth language.
+- English translations of the long-form documents in `docs/en/` (`COMPLIANCE`, `ROUTING`,
+  `GATEWAY-CONTRACT`, `CONSENT-FLOW`, `OPERATIONS`) plus an English audit summary (`AUDIT.en.md`);
+  Chinese originals carry bilingual headers.
+- GitHub Discussions, branch protection (required CI check, 1 review, linear history,
+  no force-push/deletion) and private vulnerability reporting enabled.
+- `TRANSLATIONS.md`, `GOVERNANCE.md`, `CONTRIBUTING.md` updated for the new canonical language.
+
+### Changed
+- Root `package.json` version `0.2.0`; new `app:*` scripts delegate to per-app projects
+  (apps are independent npm projects, not workspaces, so the core dependency allow-list is unchanged).
+- Test runner now also collects `apps/companion-web/test/*.spec.ts`.
+
+### Compliance
+- Desktop/mobile surfaces add no new platform capabilities: no logins, no userbots, no group chats,
+  no media parsing, no content persistence. Companion API exposes only metadata and control actions.
+- Mobile experimental mode is deliberately a **subset** (no Telegram, no third-party content),
+  so its narrower scope is stricter than the desktop core.
 
 ## [0.1.0] - 2026-10-18
 

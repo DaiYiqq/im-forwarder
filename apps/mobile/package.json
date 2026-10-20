@@ -1,0 +1,27 @@
+{
+  "name": "@im-forwarder/mobile",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "im-forwarder 移动端外壳：Capacitor Android/iOS 工程，WebView 加载 apps/companion-web 构建产物",
+  "license": "SEE LICENSE IN ../../LICENSE",
+  "scripts": {
+    "sync": "node scripts/prepare-web.mjs && cap sync",
+    "android:debug": "node scripts/gradle.mjs assembleDebug",
+    "android:open": "cap open android",
+    "ios:open": "cap open ios",
+    "icons": "node scripts/gen-android-icons.mjs"
+  },
+  "dependencies": {
+    "@capacitor/core": "6.2.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "6.2.2",
+    "@capacitor/android": "6.2.2",
+    "@capacitor/ios": "6.2.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

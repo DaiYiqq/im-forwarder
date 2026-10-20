@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <!--
+      CSP：default-src 'self' 严格锁死脚本/样式/图片来源；
+      connect-src 只放行 http(s) 与 ws(s)，供用户配置的桌面端/网关地址使用（地址在运行时由用户填写）。
+      script-src/style-src 均不带 'unsafe-inline'：本应用没有任何内联脚本、内联样式或 innerHTML 注入。
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' http: https: ws: wss:; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="theme-color" content="#0b1b2b" />
+    <meta name="description" content="im-forwarder 移动伴生控制端：查看状态/路由/日志并启停转发（不显示任何消息正文）" />
+    <meta name="color-scheme" content="dark light" />
+    <title>im-forwarder 伴生控制端</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <h1>im-forwarder</h1>
+        <p class="brand-sub">移动伴生控制端</p>
+      </div>
+      <div id="connection-chip" class="chip-slot"></div>
+    </header>
+
+    <div class="view-head">
+      <h2 id="view-title" class="section-title">连接桌面端</h2>
+    </div>
+
+    <nav id="nav" class="nav" aria-label="主导航"></nav>
+
+    <main id="view" class="view"></main>
+
+    <footer class="app-footer">
+      <p>只显示白名单元数据，不显示/不缓存消息正文 · 令牌仅存内存 · 无遥测/无自动更新</p>
+      <p class="muted">微信 iLink(ClawBot) ↔ QQ NapCat ↔ Telegram Bot API 转发路由服务的移动伴生端</p>
+    </footer>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>

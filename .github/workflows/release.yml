@@ -1,0 +1,316 @@
+name: release
+
+# 全平台安装包发布流水线：
+#   桌面端  Windows(NSIS+portable) / macOS(dmg+zip, universal) / Linux(AppImage+deb)
+#   移动端  Android debug APK（侧载；iOS 仅工程骨架，不支持签名构建，见 docs/INSTALL.md）
+# 触发：推送 v* tag（自动创建 GitHub Release 并附全部资产 + SHA256SUMS.txt）
+#       或手动 workflow_dispatch（只构建、上传 Actions artifact，不建 Release）
+#
+# 合规约束：
+#   · 未签名构建，不引入自动更新/遥测；
+#   · 构建产物不含任何令牌/凭据（令牌只在 smoke 测试里用假值 ci-token）；
+#   · 不构建 iOS 包（无 Apple 签名身份，且 iOS 不允许常驻后台转发）。
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ── 1. 共享 Web 应用（PWA/伴生控制端，桌面端静态托管 + Android WebView 共用）──
+  web:
+    name: companion-web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/companion-web/package-lock.json
+      - name: Install
+        run: npm ci --prefix apps/companion-web
+      - name: Typecheck
+        run: npm --prefix apps/companion-web run typecheck
+      - name: Test
+        run: npm --prefix apps/companion-web test
+      - name: Build
+        run: npm --prefix apps/companion-web run build
+      - name: Verify web dist
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f apps/companion-web/dist/index.html
+          test -f apps/companion-web/dist/manifest.webmanifest
+          test -f apps/companion-web/dist/sw.js
+          echo "web dist OK"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: companion-web-dist
+          path: apps/companion-web/dist
+          retention-days: 7
+
+  # ── 2. 桌面端 Windows ───────────────────────────────────────────────────────
+  desktop-windows:
+    name: desktop-windows
+    needs: web
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: companion-web-dist
+          path: apps/companion-web/dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+      - name: Install companion web deps
+        run: npm ci --prefix apps/companion-web
+      - name: Install desktop deps
+        run: npm ci --prefix apps/desktop
+      - name: Typecheck desktop
+        run: npm --prefix apps/desktop run typecheck
+      - name: Build desktop
+        run: npm --prefix apps/desktop run build
+      - name: Smoke - valid config must exit 0
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/imf"
+          cp config/config.example.yaml "$RUNNER_TEMP/imf/config.yaml"
+          node scripts/ci/verify-artifacts.mjs --assert-exit 0 -- \
+            env IM_CONFIG_PATH="$RUNNER_TEMP/imf/config.yaml" EASYBOT_TOKEN=ci-token \
+            ELECTRON_DISABLE_SECURITY_WARNINGS=1 npm --prefix apps/desktop run smoke
+      - name: Smoke - Telegram route must be refused (exit 78)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/imf"
+          cat > "$RUNNER_TEMP/imf/tg.yaml" <<'YAML'
+          version: 1
+          gateway:
+            baseUrl: "http://127.0.0.1:18080"
+            eventsUrl: "ws://127.0.0.1:18080/ws/events"
+            tokenEnv: "EASYBOT_TOKEN"
+          routes:
+            - id: wx-to-tg
+              group: ci-group
+              contentOwner: self
+              from: { platform: wechat, conversationId: "wxid_self", chatType: private }
+              to: [{ platform: telegram, conversationId: "123", chatType: private }]
+          YAML
+          node scripts/ci/verify-artifacts.mjs --assert-exit 78 -- \
+            env IM_CONFIG_PATH="$RUNNER_TEMP/imf/tg.yaml" EASYBOT_TOKEN=ci-token \
+            ELECTRON_DISABLE_SECURITY_WARNINGS=1 npm --prefix apps/desktop run smoke
+      - name: Package (NSIS + portable)
+        run: npm --prefix apps/desktop run dist:win
+      - name: Clean non-release metadata
+        shell: bash
+        run: rm -f apps/desktop/release/*.blockmap apps/desktop/release/builder-debug.yml
+      - name: Verify artifacts
+        run: node scripts/ci/verify-artifacts.mjs --platform win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-win
+          path: apps/desktop/release/**
+          retention-days: 7
+
+  # ── 3. 桌面端 macOS（未签名，universal）─────────────────────────────────────
+  desktop-macos:
+    name: desktop-macos
+    needs: web
+    runs-on: macos-latest
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: companion-web-dist
+          path: apps/companion-web/dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+      - name: Install companion web deps
+        run: npm ci --prefix apps/companion-web
+      - name: Install desktop deps
+        run: npm ci --prefix apps/desktop
+      - name: Typecheck desktop
+        run: npm --prefix apps/desktop run typecheck
+      - name: Build desktop
+        run: npm --prefix apps/desktop run build
+      - name: Smoke - valid config must exit 0
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/imf"
+          cp config/config.example.yaml "$RUNNER_TEMP/imf/config.yaml"
+          node scripts/ci/verify-artifacts.mjs --assert-exit 0 -- \
+            env IM_CONFIG_PATH="$RUNNER_TEMP/imf/config.yaml" EASYBOT_TOKEN=ci-token \
+            ELECTRON_DISABLE_SECURITY_WARNINGS=1 npm --prefix apps/desktop run smoke
+      - name: Package (dmg + zip, universal)
+        run: npm --prefix apps/desktop run dist:mac
+      - name: Clean non-release metadata
+        shell: bash
+        run: rm -f apps/desktop/release/*.blockmap apps/desktop/release/builder-debug.yml
+      - name: Verify artifacts
+        run: node scripts/ci/verify-artifacts.mjs --platform mac
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-mac
+          path: apps/desktop/release/**
+          retention-days: 7
+
+  # ── 4. 桌面端 Linux（AppImage + deb）────────────────────────────────────────
+  desktop-linux:
+    name: desktop-linux
+    needs: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: companion-web-dist
+          path: apps/companion-web/dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+      - name: Install packaging tools
+        run: sudo apt-get update && sudo apt-get install -y libarchive-tools fakeroot
+      - name: Install companion web deps
+        run: npm ci --prefix apps/companion-web
+      - name: Install desktop deps
+        run: npm ci --prefix apps/desktop
+      - name: Typecheck desktop
+        run: npm --prefix apps/desktop run typecheck
+      - name: Build desktop
+        run: npm --prefix apps/desktop run build
+      - name: Package (AppImage + deb)
+        run: npm --prefix apps/desktop run dist:linux
+      - name: Clean non-release metadata
+        shell: bash
+        run: rm -f apps/desktop/release/*.blockmap apps/desktop/release/builder-debug.yml
+      - name: Verify artifacts
+        run: node scripts/ci/verify-artifacts.mjs --platform linux
+      - uses: actions/upload-artifact@v4
+        with:
+          name: desktop-linux
+          path: apps/desktop/release/**
+          retention-days: 7
+
+  # ── 5. Android APK（debug，侧载）────────────────────────────────────────────
+  android:
+    name: android-apk
+    needs: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: companion-web-dist
+          path: apps/companion-web/dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: apps/mobile/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install mobile deps
+        run: npm ci --prefix apps/mobile
+      - name: Sync Capacitor
+        run: npm --prefix apps/mobile run sync
+      - name: Build debug APK
+        run: |
+          cd apps/mobile/android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs=-Xmx3g
+      - name: Verify & rename APK
+        run: |
+          node scripts/ci/verify-artifacts.mjs --platform android \
+            --src apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk \
+            --out dist/android \
+            --rename "im-forwarder-0.2.0-android-debug.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: dist/android/**
+          retention-days: 7
+
+  # ── 6. Release（仅 tag）─────────────────────────────────────────────────────
+  release:
+    name: publish-release
+    needs: [desktop-windows, desktop-macos, desktop-linux, android]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Verify and generate checksums
+        run: |
+          ls -lh artifacts
+          node scripts/ci/verify-artifacts.mjs --shasums artifacts
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: im-forwarder ${{ github.ref_name }}
+          files: |
+            artifacts/*
+          fail_on_unmatched_files: true
+          body: |
+            ## im-forwarder ${{ github.ref_name }} · 全平台安装包
+
+            > ⚠️ **禁止用于商业场景、收费服务或付费托管**。MIT + Commons Clause，仅供技术研究学习。
+            > 微信侧仅官方 iLink(ClawBot) 通道且仅私聊；QQ 侧 NapCat 非官方通道，**必须用小号**；Telegram 仅官方 Bot API，出境默认关闭。
+
+            ### 桌面端（未签名）
+            | 平台 | 文件 | 说明 |
+            |---|---|---|
+            | Windows | `im-forwarder-*-win-x64.exe` | NSIS 安装器；SmartScreen 提示“未知发布者”属预期，可选“更多信息 → 仍要运行” |
+            | Windows | `im-forwarder-*-win-x64.zip` | 便携版，解压即用 |
+            | macOS | `im-forwarder-*-mac-universal.dmg` | 未签名；首次打开需右键 → 打开，或 `xattr -dr com.apple.quarantine <App>` |
+            | Linux | `im-forwarder-*-linux-x64.AppImage` / `.deb` | AppImage 需 `chmod +x` |
+
+            ### 移动端（侧载 / PWA）
+            | 形态 | 文件 | 说明 |
+            |---|---|---|
+            | Android | `im-forwarder-*-android-debug.apk` | debug 签名，侧载安装；桌面端与手机需同一局域网 |
+            | PWA | 无需文件 | 打开桌面端「伴生服务」地址 → 浏览器菜单「添加到主屏幕」 |
+            | iOS | 无安装包 | iOS 不允许常驻后台转发；仅提供工程骨架，需 macOS + Xcode 自行构建（见 `docs/INSTALL.md`） |
+
+            ### 移动端定位（重要）
+            手机端是**伴生控制端**（查看状态/路由/日志、启停转发），转发核心运行在桌面端或服务器。
+            Android 另有**实验性“本机前台转发”**模式（仅文本/仅私聊/仅本人路由，锁屏或切后台即停止），默认关闭。
+
+            ### 校验
+            下载后请核对 `SHA256SUMS.txt`：
+            ```bash
+            sha256sum -c SHA256SUMS.txt
+            ```
+
+            ### 联系方式
+            戴亿（DaiYi）· https://github.com/DaiYiqq · 1703205607@qq.com · daiy91004@gmail.com
+            QQ 1703205607 · 微信 daiyi091004 · 抖音 daiyi091004

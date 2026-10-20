@@ -92,6 +92,8 @@ read from an environment variable.
 
 ---
 
+> Installers for desktop (Windows/macOS/Linux) and mobile (PWA / Android APK) are documented in [docs/en/INSTALL.en.md](docs/en/INSTALL.en.md); no iOS package exists (see why there).
+
 ## 3. Quick start
 
 ### Prerequisites

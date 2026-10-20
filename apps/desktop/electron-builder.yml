@@ -1,0 +1,66 @@
+appId: com.daiyiqq.imforwarder
+productName: im-forwarder
+copyright: Copyright © 2026 DaiYi (DaiYiqq) · 仅限技术研究学习，禁止商业用途
+
+directories:
+  output: release
+  buildResources: build
+
+# 只打包运行期需要的内容；不打包源码、测试、文档。
+files:
+  - dist/**
+  - renderer/**
+  - package.json
+
+# 首次启动若 userData/config.yaml 不存在，从这份示例复制。
+# 注意：示例里没有任何令牌；令牌只能经 safeStorage 或环境变量传入。
+extraResources:
+  - from: ../../config/config.example.yaml
+    to: config/config.example.yaml
+
+asar: true
+npmRebuild: false
+# 未签名构建：显式关闭发布/自动更新配置（不配置 publish / updater）。
+publish: null
+
+artifactName: "im-forwarder-${version}-${os}-${arch}.${ext}"
+
+win:
+  target:
+    - nsis
+    - portable
+  icon: build/icon.png
+  executableName: im-forwarder
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  shortcutName: im-forwarder
+
+# nsis 与 portable 都产出 .exe，统一 artifactName 会重名；
+# portable 追加 -portable 后缀，nsis 保持任务书要求的标准名。
+portable:
+  artifactName: "im-forwarder-${version}-${os}-${arch}-portable.${ext}"
+
+mac:
+  target:
+    - target: dmg
+      arch:
+        - universal
+    - target: zip
+      arch:
+        - universal
+  category: public.app-category.utilities
+  icon: build/icon.png
+  # 未签名构建：不做代码签名/公证（CI 也没有证书）。
+  identity: null
+  hardenedRuntime: false
+
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  icon: build/icon.png
+  maintainer: DaiYi <1703205607@qq.com>

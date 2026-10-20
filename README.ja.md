@@ -95,6 +95,8 @@
 
 ---
 
+> デスクトップ（Windows/macOS/Linux）とモバイル（PWA / Android APK）のインストール手順は [docs/en/INSTALL.en.md](docs/en/INSTALL.en.md)（英語）を参照。iOS 用のパッケージは提供していません。
+
 ## 3. クイックスタート
 
 ### 前提条件

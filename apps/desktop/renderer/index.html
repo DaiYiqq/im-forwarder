@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    />
+    <title>im-forwarder 桌面端</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">⇄</span>
+        <div class="brand-text">
+          <h1>im-forwarder 桌面端</h1>
+          <p class="brand-sub">微信(iLink) ↔ QQ(NapCat) ↔ Telegram(Bot API) · 仅技术研究学习</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="env-badge">本机运行 · 无自动更新 · 无遥测</span>
+      </div>
+    </header>
+
+    <!-- 合规横幅：三条平台红线始终可见，不可折叠 -->
+    <section class="compliance-banner" aria-label="合规提示">
+      <div class="compliance-item">
+        <strong>微信</strong>
+        <span>仅官方 iLink(ClawBot) 私聊，经 EasyBot 网关；本应用不含任何登录/扫码代码。</span>
+      </div>
+      <div class="compliance-item">
+        <strong>QQ</strong>
+        <span>NapCat 非官方通道，登录个人号有验证/掉线/封号风险，必须使用小号。</span>
+      </div>
+      <div class="compliance-item">
+        <strong>Telegram</strong>
+        <span>数据出境默认关闭；仅官方 Bot API，禁止 userbot/MTProto。</span>
+      </div>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="status" role="tab">状态</button>
+      <button class="tab" data-tab="config" role="tab">配置</button>
+      <button class="tab" data-tab="logs" role="tab">日志</button>
+      <button class="tab" data-tab="about" role="tab">关于</button>
+    </nav>
+
+    <main class="content">
+      <!-- ── 状态 ─────────────────────────────────────────────────────── -->
+      <section id="panel-status" class="panel active" role="tabpanel">
+        <div class="grid cards">
+          <article class="card">
+            <h2>转发状态</h2>
+            <p class="big" id="run-state">未运行</p>
+            <p class="muted" id="run-since">—</p>
+            <div class="actions">
+              <button id="btn-start" class="primary">启动转发</button>
+              <button id="btn-stop">停止转发</button>
+            </div>
+          </article>
+          <article class="card">
+            <h2>路由</h2>
+            <p class="big" id="route-count">0</p>
+            <p class="muted">来自当前配置（保存后生效）</p>
+            <p class="muted" id="gateway-host">网关：—</p>
+            <p class="muted" id="cross-border">Telegram 出境闸门：CLOSED</p>
+          </article>
+          <article class="card">
+            <h2>转发计数</h2>
+            <dl class="counts">
+              <div><dt>已转发</dt><dd id="count-forwarded">0</dd></div>
+              <div><dt>失败</dt><dd id="count-failed">0</dd></div>
+              <div><dt>跳过</dt><dd id="count-skipped">0</dd></div>
+            </dl>
+            <p class="muted">计数只含状态元数据，不含任何消息内容。</p>
+          </article>
+        </div>
+
+        <div class="grid cards">
+          <article class="card wide">
+            <h2>移动伴生控制服务</h2>
+            <ul class="kv">
+              <li><span>监听地址</span><code id="companion-address">—</code></li>
+              <li><span>服务状态</span><span id="companion-running">—</span></li>
+              <li><span>静态资源</span><span id="companion-static">—</span></li>
+              <li><span>令牌持久化</span><span id="companion-cred">—</span></li>
+            </ul>
+            <p class="muted">
+              伴生 API 默认只监听 127.0.0.1；无 token 一律 401；只提供状态/路由(脱敏)/日志(白名单)/启停，配置只读。
+            </p>
+            <div class="pair-box">
+              <div>
+                <span class="muted">一次性配对码（10 分钟有效）</span>
+                <p class="pair-code" id="pair-code">—</p>
+                <p class="muted" id="pair-expire">—</p>
+              </div>
+              <div class="actions">
+                <button id="btn-new-pair">换一个配对码</button>
+              </div>
+            </div>
+            <div class="lan-box">
+              <label class="switch">
+                <input type="checkbox" id="lan-mode" />
+                <span>开启局域网模式（0.0.0.0，手机需与本机同网段）</span>
+              </label>
+              <p class="warning" id="lan-warning" hidden></p>
+              <p class="muted" id="companion-error" hidden></p>
+              <div class="inline-form">
+                <label for="companion-port">端口</label>
+                <input type="number" id="companion-port" min="1024" max="65535" step="1" value="17871" />
+                <button id="btn-save-port">应用端口</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ── 配置 ─────────────────────────────────────────────────────── -->
+      <section id="panel-config" class="panel" role="tabpanel">
+        <div class="card">
+          <h2>配置文件</h2>
+          <p class="muted" id="config-path">—</p>
+          <p class="muted">
+            保存前会用核心的 strict schema + 合规前置检查校验；存在违规只报错，不会自动修正、不会绕过。
+          </p>
+          <textarea id="config-editor" spellcheck="false" aria-label="配置 YAML"></textarea>
+          <div class="actions">
+            <button id="btn-validate">校验</button>
+            <button id="btn-save-config" class="primary">保存</button>
+            <button id="btn-restore-example">恢复示例</button>
+            <span class="muted" id="config-status">—</span>
+          </div>
+          <div id="violations" class="violations" hidden></div>
+        </div>
+
+        <div class="card">
+          <h2>EasyBot 网关令牌</h2>
+          <p class="muted">
+            令牌只经 safeStorage 加密保存在本机，或由环境变量传入；绝不写入 config.yaml、日志、渲染进程存储或 URL。
+          </p>
+          <ul class="kv">
+            <li><span>当前状态</span><span id="token-state">—</span></li>
+            <li><span>环境变量名</span><code id="token-env">EASYBOT_TOKEN</code></li>
+            <li><span>safeStorage</span><span id="token-safe">—</span></li>
+          </ul>
+          <div class="inline-form">
+            <input type="password" id="token-input" placeholder="粘贴令牌（仅提交给主进程加密保存）" autocomplete="off" />
+            <button id="btn-save-token" class="primary">保存令牌</button>
+            <button id="btn-clear-token">清除已保存令牌</button>
+          </div>
+          <p class="muted">保存后输入框会被清空；界面永不回显令牌。</p>
+        </div>
+      </section>
+
+      <!-- ── 日志 ─────────────────────────────────────────────────────── -->
+      <section id="panel-logs" class="panel" role="tabpanel">
+        <div class="card">
+          <div class="log-head">
+            <h2>运行日志</h2>
+            <div class="inline-form">
+              <label for="log-limit">显示条数</label>
+              <select id="log-limit">
+                <option value="100" selected>100</option>
+                <option value="300">300</option>
+                <option value="1000">1000</option>
+              </select>
+              <button id="btn-clear-logs">清空显示</button>
+            </div>
+          </div>
+          <p class="muted">
+            只显示白名单字段（ts / level / event / routeId / sourcePlatform / targetPlatform / status / errorCode / latencyMs）。
+            日志仅存在于内存环形缓冲（最多 1000 条），不落盘、不含消息正文。
+          </p>
+          <div class="table-wrap">
+            <table id="log-table">
+              <thead>
+                <tr>
+                  <th>ts</th>
+                  <th>level</th>
+                  <th>event</th>
+                  <th>routeId</th>
+                  <th>source</th>
+                  <th>target</th>
+                  <th>status</th>
+                  <th>errorCode</th>
+                  <th>latencyMs</th>
+                </tr>
+              </thead>
+              <tbody id="log-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── 关于 ─────────────────────────────────────────────────────── -->
+      <section id="panel-about" class="panel" role="tabpanel">
+        <div class="card">
+          <h2>关于</h2>
+          <ul class="kv">
+            <li><span>应用</span><span id="about-name">—</span></li>
+            <li><span>版本</span><span id="about-version">—</span></li>
+            <li><span>Electron / Node / Chrome</span><span id="about-runtime">—</span></li>
+            <li><span>平台</span><span id="about-platform">—</span></li>
+            <li><span>配置文件</span><code id="about-config">—</code></li>
+            <li><span>构建签名</span><span id="about-signed">未签名构建</span></li>
+          </ul>
+          <p class="muted">
+            本构建不包含自动更新（autoUpdater）与遥测/崩溃上报；请从官方仓库重新下载升级。
+          </p>
+          <div class="links">
+            <button data-open="https://github.com/DaiYiqq/im-forwarder">GitHub 仓库</button>
+            <button data-open="https://github.com/DaiYiqq/im-forwarder/issues">问题反馈 (Issues)</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>LICENSE 摘要</h2>
+          <p class="muted" id="about-license">—</p>
+          <p class="muted">
+            合规说明见仓库 <code>COMPLIANCE.md</code>；本应用不提供任何平台登录/扫码/Cookie/userbot/群聊/媒体解析能力，
+            不代为完成 PIPL 出境或告知—同意程序。
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="status-bar">
+      <span id="toast" class="toast" role="status" aria-live="polite"></span>
+      <span class="muted" id="footer-hint">托盘常驻：关闭窗口会最小化到托盘，右键托盘可启动/停止/退出。</span>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

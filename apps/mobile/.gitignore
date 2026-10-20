@@ -1,0 +1,19 @@
+# 本目录的构建产物与依赖
+node_modules/
+
+# Capacitor 生成物 / 原生构建产物
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+ios/App/Pods/
+ios/App/build/
+ios/App/output/
+ios/DerivedData/
+ios/App/App/public/
+
+# 本地日志
+*.log
+
+# 注意：不要忽略 android/gradlew、android/gradlew.bat、android/gradle/wrapper/** ——
+# CI 需要它们来构建 debug APK。

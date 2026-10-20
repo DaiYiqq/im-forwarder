@@ -10,3 +10,27 @@ config/config.yaml
 .env
 .env.*
 !.env.example
+
+# ── 应用构建产物（apps/ 下的桌面端/移动端）──────────────────────────────
+apps/*/node_modules/
+apps/*/dist/
+apps/desktop/release/
+apps/mobile/android/.gradle/
+apps/mobile/android/app/build/
+apps/mobile/android/build/
+apps/mobile/android/local.properties
+apps/mobile/ios/App/Pods/
+apps/mobile/ios/App/build/
+apps/mobile/ios/App/App/public/
+apps/mobile/ios/App/App.xcworkspace/xcuserdata/
+apps/mobile/ios/App/App.xcodeproj/xcuserdata/
+*.apk
+*.aab
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.snap
+*.ipa
+*.xcarchive
+*.xcworkspace/xcuserdata/

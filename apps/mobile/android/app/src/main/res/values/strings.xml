@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">im-forwarder</string>
+    <string name="title_activity_main">im-forwarder</string>
+    <string name="package_name">com.daiyiqq.imforwarder</string>
+    <string name="custom_url_scheme">com.daiyiqq.imforwarder</string>
+</resources>

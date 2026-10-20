@@ -1,6 +1,6 @@
 {
   "name": "im-forwarder",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "微信(iLink/ClawBot) <-> QQ(NapCat) <-> Telegram(Bot API) 三平台消息转发路由服务（仅供技术研究学习，禁止商业用途）",
@@ -38,6 +38,16 @@
     "test:one": "node --import tsx --test",
     "compliance:scan": "node scripts/compliance-scan.mjs",
     "check": "npm run typecheck && npm run compliance:scan && npm run test",
+    "app:web": "npm --prefix apps/companion-web run build",
+    "app:web:test": "npm --prefix apps/companion-web test",
+    "app:desktop": "npm --prefix apps/desktop run start",
+    "app:desktop:smoke": "npm --prefix apps/desktop run smoke",
+    "app:desktop:dist:win": "npm --prefix apps/desktop run dist:win",
+    "app:desktop:dist:mac": "npm --prefix apps/desktop run dist:mac",
+    "app:desktop:dist:linux": "npm --prefix apps/desktop run dist:linux",
+    "app:mobile:sync": "npm --prefix apps/mobile run sync",
+    "apps:typecheck": "npm --prefix apps/companion-web run typecheck && npm --prefix apps/desktop run typecheck",
+    "check:all": "npm run check && npm run apps:typecheck && npm run app:web:test && npm run app:web",
     "mock": "tsx scripts/mock-gateway.ts"
   },
   "dependencies": {

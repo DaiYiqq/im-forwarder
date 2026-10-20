@@ -2,10 +2,11 @@
 /**
  * im-forwarder 合规静态扫描（`npm run compliance:scan`）。
  *
- * 三道检查：
- *  1. 禁用词：src/**\/*.ts、scripts/**\/*.ts 中不得出现任何"平台登录/协议逆向/userbot"相关标识；
+ * 四道检查：
+ *  1. 禁用词：src/**\/*.ts、scripts/**\/*.ts、apps/**\/*.ts 中不得出现任何"平台登录/协议逆向/userbot"相关标识；
  *  2. 日志通道：src/ 下不得出现 console.log(（必须走 Logger 或 process.stdout.write）；
- *  3. 依赖白名单：package.json 的 dependencies / devDependencies 必须恰好等于允许集合。
+ *  3. 依赖白名单：根 package.json 的 dependencies / devDependencies 必须恰好等于允许集合；
+ *  4. 应用依赖：apps 下各应用的 package.json 不得出现登录/userbot/逆向类依赖（桌面端/移动端新增面）。
  *
  * 匹配规则（重要，避免被误解为逃避检查）：
  *  - **注释不参与匹配**。扫描前先剥离块注释与行注释，
@@ -27,8 +28,25 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const SELF_PATH = fileURLToPath(import.meta.url);
-const SCAN_ROOTS = ["src", "scripts"];
-const EXCLUDED_DIR_NAMES = new Set(["node_modules", "test", "dist", ".git"]);
+const SCAN_ROOTS = ["src", "scripts", "apps"];
+const EXCLUDED_DIR_NAMES = new Set([
+  "node_modules",
+  "test",
+  "dist",
+  ".git",
+  // 应用目录里的非源码目录（构建产物/原生工程/依赖缓存）
+  "release",
+  "build",
+  "out",
+  "android",
+  "ios",
+  ".gradle",
+  "coverage",
+]);
+
+/** 应用依赖中的禁用包（精确匹配包名，大小写不敏感）。 */
+const FORBIDDEN_APP_DEPENDENCY_PATTERN =
+  /^(telethon|pyrogram|mtproto|tdlib|userbot|wechaty|itchat|padlocal|wechatferry|wcferry)([-_.].*)?$/i;
 
 /** 禁用词规则（大小写不敏感）。 */
 const FORBIDDEN_PATTERNS = [
@@ -192,6 +210,20 @@ function inRanges(index, ranges) {
   return ranges.some(([start, end]) => index >= start && index <= end);
 }
 
+/**
+ * 网关令牌环境变量名 `EASYBOT_TOKEN` 的豁免判定。
+ *
+ * 禁用词规则里有 `bot_token`（指微信侧登录凭据），但本项目自己的网关令牌变量名
+ * `EASYBOT_TOKEN` 会命中该规则。两者含义完全不同：前者是平台登录凭据（禁止），
+ * 后者只是"EasyBot 网关"的 token 变量名（文档与配置示例统一使用）。
+ * 因此仅当命中项正好是 BOT_TOKEN 且紧邻前缀为 EASY 时才豁免，并在报告中打印。
+ */
+function isGatewayTokenEnvName(line, index, term) {
+  if (!/^bot_token$/i.test(term)) return false;
+  const prefix = line.slice(Math.max(0, index - 4), index);
+  return /easy$/i.test(prefix);
+}
+
 function scanSources(scanFiles, findings, exemptions) {
   for (const absolutePath of scanFiles) {
     const relativePath = toPosix(relative(ROOT, absolutePath));
@@ -225,6 +257,8 @@ function scanSources(scanFiles, findings, exemptions) {
           };
           if (inRanges(index, guardRanges)) {
             exemptions.push({ ...entry, reason: "deny-list/blocklist 防护定义" });
+          } else if (isGatewayTokenEnvName(line, match.index, match[0])) {
+            exemptions.push({ ...entry, reason: "网关令牌环境变量名 EASYBOT_TOKEN（非微信 bot_token 凭据）" });
           } else {
             findings.push(entry);
           }
@@ -315,6 +349,39 @@ function scanPackageJson(findings) {
   }
 }
 
+function scanAppDependencies(findings) {
+  const root = join(ROOT, "apps");
+  let appDirs;
+  try {
+    appDirs = readdirSync(root, { withFileTypes: true }).filter((entry) => entry.isDirectory());
+  } catch {
+    return;
+  }
+  for (const entry of appDirs) {
+    const packagePath = join(root, entry.name, "package.json");
+    let parsed;
+    try {
+      parsed = JSON.parse(readFileSync(packagePath, "utf8"));
+    } catch {
+      continue;
+    }
+    const names = [
+      ...Object.keys(parsed.dependencies ?? {}),
+      ...Object.keys(parsed.devDependencies ?? {}),
+    ];
+    for (const name of names) {
+      if (FORBIDDEN_APP_DEPENDENCY_PATTERN.test(name)) {
+        findings.push({
+          kind: "dependency",
+          file: `apps/${entry.name}/package.json`,
+          line: 0,
+          message: `应用依赖出现禁用包：${name}（禁止平台登录/协议逆向/userbot 类依赖）`,
+        });
+      }
+    }
+  }
+}
+
 function printSection(title) {
   process.stdout.write(`${title}\n`);
 }
@@ -342,7 +409,9 @@ function main() {
   process.stdout.write("════════════════════════════════════════════════════════════════\n");
   process.stdout.write(" im-forwarder 合规静态扫描（compliance:scan）\n");
   process.stdout.write("════════════════════════════════════════════════════════════════\n");
-  process.stdout.write(`扫描根目录：${SCAN_ROOTS.map((name) => `${name}/**/*.ts`).join("、")}\n`);
+  process.stdout.write(
+    `扫描根目录：${SCAN_ROOTS.map((name) => `${name}/**/*.ts`).join("、")}\n`,
+  );
   process.stdout.write("规则说明：先剥离块注释与行注释再匹配，注释不参与匹配；\n");
   process.stdout.write(
     "          但 deny-list/blocklist 常量定义中的禁用词属于防护定义，逐条豁免并打印（见下方）。\n\n",
@@ -356,7 +425,7 @@ function main() {
   const findings = [];
   const exemptions = [];
 
-  printSection(`[1/3] 禁用词扫描（${scanFiles.length} 个文件）`);
+  printSection(`[1/4] 禁用词扫描（${scanFiles.length} 个文件）`);
   scanSources(scanFiles, findings, exemptions);
   const forbiddenFindings = findings.filter((finding) => finding.kind === "forbidden-term");
   if (forbiddenFindings.length === 0) {
@@ -375,7 +444,7 @@ function main() {
     }
   }
 
-  printSection("[2/3] 日志通道检查（src/ 下不得出现 console.log(）");
+  printSection("[2/4] 日志通道检查（src/ 下不得出现 console.log(）");
   const consoleFindings = findings.filter((finding) => finding.kind === "console-log");
   if (consoleFindings.length === 0) {
     process.stdout.write("  ✓ src/ 下没有 console.log(（未绕过 Logger 白名单）\n");
@@ -383,7 +452,7 @@ function main() {
     printFindings(consoleFindings);
   }
 
-  printSection("[3/3] 依赖白名单检查（精确集合）");
+  printSection("[3/4] 依赖白名单检查（精确集合）");
   scanPackageJson(findings);
   const dependencyFindings = findings.filter((finding) => finding.kind === "dependency");
   if (dependencyFindings.length === 0) {
@@ -393,6 +462,15 @@ function main() {
     );
   } else {
     printFindings(dependencyFindings);
+  }
+
+  printSection("[4/4] 应用依赖检查（apps/*/package.json）");
+  const beforeAppScan = findings.length;
+  scanAppDependencies(findings);
+  if (findings.length === beforeAppScan) {
+    process.stdout.write("  ✓ apps/ 下没有平台登录 / userbot / 协议逆向类依赖\n");
+  } else {
+    process.stdout.write("  ✗ apps/ 下发现禁用依赖（见下方）\n");
   }
 
   const otherFindings = findings.filter(

@@ -18,6 +18,7 @@ Long-form documents:
 | Gateway contract | `docs/GATEWAY-CONTRACT.md` | `docs/en/GATEWAY-CONTRACT.en.md` |
 | Consent flow | `docs/CONSENT-FLOW.md` | `docs/en/CONSENT-FLOW.en.md` |
 | Operations | `docs/OPERATIONS.md` | `docs/en/OPERATIONS.en.md` |
+| Install | `docs/INSTALL.md` | `docs/en/INSTALL.en.md` |
 | Audit | `docs/AUDIT.md` | `docs/en/AUDIT.en.md` (summary) |
 
 Rationale: the primary audience and the platform terms are Chinese-language; and one canonical version

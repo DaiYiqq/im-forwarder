@@ -100,3 +100,40 @@ we cannot police third-party deployments.
   详见 [COMPLIANCE.md](COMPLIANCE.md) §6.3 / §10。
 - 永不接受的"修复"：新增平台登录/userbot/群聊/媒体解析/正文持久化/合规绕过开关/规避网络方案/
   放宽非商业限制。
+
+---
+
+## Distribution, desktop and mobile (v0.2.0)
+
+### Artifacts are unsigned
+
+- Windows (NSIS/portable), macOS (dmg/zip) and Android (debug APK) artifacts are **not signed** by a
+  trusted publisher. Verify `SHA256SUMS.txt` from the release page before installing; do not install
+  packages obtained from third-party sites.
+- There is **no auto-update mechanism** and **no telemetry/crash reporting**. Updates are manual
+  downloads from GitHub Releases.
+- iOS: no IPA is published (no signing identity; iOS does not permit persistent background forwarding).
+
+### Companion API threat model (desktop → phone)
+
+- Default bind: `127.0.0.1:17871`. LAN binding is an explicit, warned opt-in.
+- Auth: 6-digit pairing code (10 minutes, single use, 5 failures/min/IP) exchanged for a bearer token;
+  token comparison is constant-time; all responses are `no-store`.
+- Exposed data: runtime status, **sanitized** routes (no conversation IDs or receiver details),
+  whitelisted log fields, start/stop control. Never: message content, raw gateway frames,
+  plaintext config, tokens.
+- Transport is plain HTTP on the LAN by default (no TLS). Treat the local network as the trust
+  boundary; use a VPN for remote access. Do not port-forward 17871 to the internet.
+- If a paired device is lost, use "reset pairing token" on the desktop; all devices must re-pair.
+
+### Out of scope for reports
+
+- Someone with local write access to the desktop profile can modify config/consent (documented trust boundary).
+- Network attackers on an untrusted LAN (no TLS) — use a trusted network/VPN.
+- Android OS killing the experimental foreground mode (documented limitation, not a vulnerability).
+
+### Mobile
+
+- Android APK is a **debug-signed sideload** build; it is not distributed via app stores.
+- The experimental on-device mode is a strict subset (no Telegram, no third-party content, no groups,
+  no media, foreground only). Reports about "it stops in the background" are expected behaviour.

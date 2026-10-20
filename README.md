@@ -81,6 +81,8 @@
 
 ---
 
+> 桌面端（Windows/macOS/Linux）与移动端（PWA / Android APK）安装包说明见 [docs/INSTALL.md](docs/INSTALL.md)；iOS 不提供安装包（原因见该文档）。
+
 ## 三、快速开始
 
 ### 前置条件
