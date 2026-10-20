@@ -34,3 +34,6 @@ apps/mobile/ios/App/App.xcodeproj/xcuserdata/
 *.ipa
 *.xcarchive
 *.xcworkspace/xcuserdata/
+
+# 本地临时脚本/产物（不进入仓库）
+.tmp/
