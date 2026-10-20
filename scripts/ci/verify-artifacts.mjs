@@ -123,7 +123,11 @@ function verifyAndroid(args) {
 
 function shasums(dir) {
   if (!existsSync(dir)) fail(`校验和目录不存在：${dir}`);
-  const files = listFiles(dir).filter((file) => !basename(file).startsWith("SHA256SUMS"));
+  // 只对目录顶层的发布文件求校验和：不递归，避免把安装包内部文件（解包目录）也算进去。
+  const files = readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => join(dir, entry.name))
+    .filter((file) => !basename(file).startsWith("SHA256SUMS"));
   if (files.length === 0) fail(`目录为空，无法生成校验和：${dir}`);
   const lines = files
     .map((file) => ({

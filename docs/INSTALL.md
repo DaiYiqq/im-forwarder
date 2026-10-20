@@ -37,7 +37,7 @@
 | 文件 | 用法 |
 |---|---|
 | `im-forwarder-<版本>-win-x64.exe` | NSIS 安装器，双击安装（默认安装到当前用户目录，无需管理员） |
-| `im-forwarder-<版本>-win-x64.zip`（portable） | 解压即用，适合 U 盘/免安装 |
+| `im-forwarder-<版本>-win-x64-portable.exe` | 便携版，双击即用，适合 U 盘/免安装 |
 
 首次运行会提示 **"Windows 已保护你的电脑"（SmartScreen）**：因为安装包未签名。
 点「更多信息」→「仍要运行」。**请先确认 SHA256 与 Release 页的 `SHA256SUMS.txt` 一致**。
@@ -80,8 +80,8 @@
 
 | 文件 | 用法 |
 |---|---|
-| `im-forwarder-<版本>-linux-x64.AppImage` | `chmod +x` 后直接运行，无需安装 |
-| `im-forwarder-<版本>-linux-x64.deb` | Debian/Ubuntu：`sudo apt install ./im-forwarder-*.deb` |
+| `im-forwarder-<版本>-linux-x86_64.AppImage` | `chmod +x` 后直接运行，无需安装 |
+| `im-forwarder-<版本>-linux-amd64.deb` | Debian/Ubuntu：`sudo apt install ./im-forwarder-*.deb` |
 
 AppImage 若提示缺少 FUSE：`sudo apt install libfuse2`，或 `./im-forwarder-*.AppImage --appimage-extract` 后运行。
 

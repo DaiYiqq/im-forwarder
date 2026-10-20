@@ -59,6 +59,12 @@ an experimental on-device foreground mode for Android, and the four-language doc
 - Mobile experimental mode is deliberately a **subset** (no Telegram, no third-party content),
   so its narrower scope is stricter than the desktop core.
 
+### Release
+- GitHub Release `v0.2.0` published with seven unsigned installers (Windows NSIS + portable,
+  macOS universal dmg + zip, Linux AppImage + deb, Android debug APK) plus `SHA256SUMS.txt`.
+- Release pipeline publishes only final installers, asserts the expected artifact count, and
+  generates checksums over top-level files only (no unpacked application trees).
+
 ## [0.1.0] - 2026-10-18
 
 First public release. Scope is deliberately narrow: **text-only, private-chat-only,

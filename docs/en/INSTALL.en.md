@@ -40,7 +40,7 @@
 | File | Usage |
 |---|---|
 | `im-forwarder-<version>-win-x64.exe` | NSIS installer; per-user install, no admin required |
-| `im-forwarder-<version>-win-x64.zip` | Portable build, unzip and run |
+| `im-forwarder-<version>-win-x64-portable.exe` | Portable build, run directly |
 
 First launch triggers **SmartScreen ("Windows protected your PC")** because the build is unsigned.
 Click *More info → Run anyway*. **Verify SHA256 against the release `SHA256SUMS.txt` first.**
@@ -84,8 +84,8 @@ User data: `~/Library/Application Support/im-forwarder/`.
 
 | File | Usage |
 |---|---|
-| `im-forwarder-<version>-linux-x64.AppImage` | `chmod +x` and run, no install needed |
-| `im-forwarder-<version>-linux-x64.deb` | Debian/Ubuntu: `sudo apt install ./im-forwarder-*.deb` |
+| `im-forwarder-<version>-linux-x86_64.AppImage` | `chmod +x` and run, no install needed |
+| `im-forwarder-<version>-linux-amd64.deb` | Debian/Ubuntu: `sudo apt install ./im-forwarder-*.deb` |
 
 If AppImage complains about FUSE: `sudo apt install libfuse2`, or run with `--appimage-extract`.
 
