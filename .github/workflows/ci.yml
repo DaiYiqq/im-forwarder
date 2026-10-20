@@ -1,0 +1,66 @@
+name: ci
+
+# 每次 push / PR 都跑完整的三道门：类型 → 合规静态扫描 → 测试。
+# 任何一道失败都视为阻塞合并（合规优先于功能）。
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: typecheck / compliance-scan / test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Compliance static scan
+        run: npm run compliance:scan
+
+      # 验收守卫：断言仓库内不存在被禁止的文件名。
+      # 说明：
+      #  - 禁用词扫描（compliance:scan）负责"文件内容"层面的检查；
+      #  - 本步骤负责"文件名/产物"层面：任何平台登录/协议逆向产物（*.py、*.session、
+      #    telethon/pyrogram/mtproto 相关文件）都不允许出现在仓库里；
+      #  - test/fixtures 目录按约定豁免（仅存放测试辅助代码，不参与产品构建）。
+      #  - node_modules 是依赖安装产物，不属于仓库内容，跳过。
+      - name: Acceptance guard - forbidden files
+        run: |
+          set -euo pipefail
+          matches="$(find . \
+            -path ./node_modules -prune -o \
+            -path ./.git -prune -o \
+            -path ./test/fixtures -prune -o \
+            -type f \( \
+              -name '*.py' -o \
+              -name '*.session' -o \
+              -name '*.session-journal' -o \
+              -name '*.userbot' -o \
+              -name '*telethon*' -o \
+              -name '*pyrogram*' -o \
+              -name '*mtproto*' \
+            \) -print)"
+          if [ -n "$matches" ]; then
+            echo "::error::仓库内出现被禁止的文件（平台登录 / 协议逆向产物）"
+            echo "$matches"
+            exit 1
+          fi
+          echo "验收守卫通过：未发现被禁止的文件。"
+
+      - name: Test
+        run: npm test

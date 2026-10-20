@@ -1,0 +1,81 @@
+MIT License with Commons Clause Restriction
+==========================================
+
+Copyright (c) 2026 戴亿 (DaiYi) and im-forwarder contributors
+Contact: 1703205607@qq.com · daiy91004@gmail.com · https://github.com/DaiYiqq/im-forwarder
+
+本许可证 = MIT 许可证 + Commons Clause 限制条款（下文第 2 节）。
+"Commons Clause" 是附加在开源许可证之上的限制条件，用于禁止"出售"行为。
+因此本组合**不是** OSI（Open Source Initiative）认可的开源许可证，
+不得按开源项目理解或使用。
+
+-------------------------------------------------------------------------------
+1. MIT License（原始文本）
+-------------------------------------------------------------------------------
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+2. Commons Clause Restriction（限制条款，优先于第 1 节中冲突的部分）
+-------------------------------------------------------------------------------
+
+"Commons Clause" License Condition v1.0
+
+The Software is provided to you by the Licensor under the License, as defined
+below, subject to the following condition.
+
+Without limiting other conditions in the License, the grant of rights under the
+License does not include, and the License does not grant to you, the right to
+Sell the Software.
+
+For purposes of the foregoing, "Sell" means practicing any or all of the rights
+granted to you under the License to provide to third parties, for a fee or
+other consideration (including without limitation fees for hosting or
+consulting/support services related to the Software), a product or service
+whose value derives, entirely or substantially, from the functionality of the
+Software. Any license notice or attribution required by the License must also
+include this Commons Clause License Condition notice.
+
+-------------------------------------------------------------------------------
+3. 中文补充说明（仅为便于理解，与上文冲突时以上文英文条款为准）
+-------------------------------------------------------------------------------
+
+在 MIT 许可证授予的权利之上，额外禁止以下行为：
+
+(a) 以收费或其他对价方式，向第三方提供其价值全部或实质上来源于本软件功能的产品或服务；
+(b) 提供**付费托管**服务（例如"帮我部署并代管一个转发机器人，按月收费"）；
+(c) **转卖**本软件或其衍生版本、将本软件打包进商业产品中销售；
+(d) 以本项目为基础提供"代为转发/代为接入"的收费服务。
+
+允许的行为包括（不构成"出售"）：
+
+- 个人学习、研究、自用部署；
+- 非商业性质的技术分享、教学、二次开发；
+- 免费提供不收取任何费用、且不以本项目为其商业产品卖点的部署协助。
+
+若你希望获得商业使用授权，须另行取得著作权人的**书面**许可。
+
+-------------------------------------------------------------------------------
+4. 与平台条款的关系
+-------------------------------------------------------------------------------
+
+本许可证仅约束你对**本软件**的使用，不能替代也不能豁免任何平台的
+服务条款 / 开放能力授权条款（包括但不限于微信 iLink / ClawBot 的
+非商业目的许可、QQ 及 NapCat 相关条款、Telegram 服务条款）。
+当平台条款与本许可证冲突时，更严格的一方生效。

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+
+# 运行期产生的本地状态：只允许出现"同意元数据"，不允许出现聊天正文
+data/
+config/config.yaml
+
+# 密钥只存在于环境变量，任何 .env 文件都不得入库
+.env
+.env.*
+!.env.example

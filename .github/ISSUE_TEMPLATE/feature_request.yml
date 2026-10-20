@@ -1,0 +1,65 @@
+name: ✨ Feature request
+description: Suggest an improvement (features that weaken compliance gates will be declined)
+title: "feat: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before proposing: this project has **compliance invariants** that no feature may break —
+        no group chats, no platform logins/userbots, no media parsing, no content persistence,
+        no bypass switches, no commercial use. See
+        [CONTRIBUTING.md](https://github.com/DaiYiqq/im-forwarder/blob/main/CONTRIBUTING.md).
+
+  - type: checkboxes
+    id: invariants
+    attributes:
+      label: Compliance check
+      options:
+        - label: This request does not require group-chat support
+          required: true
+        - label: This request does not require platform login / userbot / reverse engineering
+          required: true
+        - label: This request does not require persisting or logging message content
+          required: true
+        - label: This request does not require a compliance bypass flag
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / use case
+      description: What are you trying to do? Personal research use only.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Config shape, behaviour, and default value (new switches must default to off).
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+
+  - type: textarea
+    id: risks
+    attributes:
+      label: Privacy / compliance impact
+      description: Does it touch PIPL, platform terms, data leaving the machine, or stored data?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Change size
+      options:
+        - Docs / translations only
+        - Config or small code change
+        - New module
+        - Requires an RFC (new platform / message type / deployment mode)

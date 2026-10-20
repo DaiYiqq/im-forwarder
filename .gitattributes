@@ -1,0 +1,11 @@
+# Normalize line endings: repository stores LF, checkouts on Windows also get LF.
+* text=auto eol=lf
+
+# Binary / generated assets
+*.png binary
+*.jpg binary
+*.ico binary
+*.zip binary
+
+# Do not diff lockfiles (still tracked, just not displayed in diffs by default)
+package-lock.json -diff

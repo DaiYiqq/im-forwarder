@@ -1,0 +1,61 @@
+name: ⚖️ Compliance concern
+description: Report a compliance design problem, a documentation gap, or suspected misuse of this project
+title: "compliance: "
+labels: ["compliance", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for **compliance design** issues, e.g.:
+        - a gate can be bypassed by a configuration I found;
+        - a PIPL article is not addressed in [COMPLIANCE.md](https://github.com/DaiYiqq/im-forwarder/blob/main/COMPLIANCE.md);
+        - a platform term is misdescribed;
+        - someone uses this project for non-consensual forwarding or paid services.
+
+        ⚠️ **Do not paste** other people's chat content, account IDs, phone numbers or any personal data.
+        ⚠️ Security vulnerabilities go to [SECURITY.md](https://github.com/DaiYiqq/im-forwarder/blob/main/SECURITY.md), not here.
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Concern type
+      options:
+        - Gate bypass (configuration or code)
+        - PIPL article not addressed / misdescribed
+        - Platform terms misdescribed
+        - Documentation contradicts the code
+        - Suspected misuse by a third party
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is the issue? Which document/section or which behaviour?
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence (no personal data)
+      description: Config snippets (redacted), file paths, test names, commit hashes, or links.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact assessment
+      description: Who could be affected? What data could be processed without a legal basis?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Suggested fix
+      description: Code location + test idea. Remember C1–C10 cannot be weakened.

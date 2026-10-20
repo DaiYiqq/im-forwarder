@@ -1,0 +1,153 @@
+# im-forwarder 默认配置
+#
+# 交付状态即为"最保守可用"：
+#   · 只开放 微信私聊 ↔ QQ 指定会话 这一条境内链路；
+#   · 所有 Telegram（出境）路由一律注释掉；
+#   · 他人内容转发的同意机制关闭，且没有任何 third-party 路由。
+#
+# 严禁在本文件写入任何平台凭据（cookie / bot_token / ilink_* / qrcode / MTProto 参数）。
+# 本服务只从环境变量读取 EasyBot 网关的令牌。
+#
+# 平台性质提醒（详见 README 风险提示与 COMPLIANCE.md）：
+#   · 微信：仅官方 iLink(ClawBot) 通道，仅私聊，非商业目的授权；
+#   · QQ：NapCat 不是官方机器人通道，登录个人号有登录验证/掉线/封号风险，必须用小号；
+#   · Telegram：仅官方 Bot API；转发到 Telegram 属于数据出境，默认关闭。
+
+version: 1
+
+gateway:
+  # EasyBot 统一网关地址（本机部署示例）。本服务不直连任何平台。
+  baseUrl: "http://127.0.0.1:18080"
+  eventsUrl: "ws://127.0.0.1:18080/ws/events"
+  # 只写环境变量名，不写令牌本身
+  tokenEnv: "EASYBOT_TOKEN"
+  send:
+    path: "/api/v1/messages/send"
+  requestTimeoutMs: 10000
+  maxRetries: 2
+  # 若你的网关字段命名与默认契约不同，在这里覆盖（键名固定，含义见 docs/GATEWAY-CONTRACT.md）
+  # fieldMap:
+  #   conversationId: "data.conversation.id"
+  #   chatType: "data.conversation.type"
+
+compliance:
+  # ── 数据出境闸门（PIPL 第 38/39 条）──────────────────────────────────────
+  # 默认关闭。开启前请阅读 COMPLIANCE.md 与 docs/OPERATIONS.md 的出境清单。
+  telegramCrossBorder:
+    enabled: false
+    operator: null
+    acknowledgedAt: null
+    selfMessagesOnlyConfirmed: false
+    riskNoticeVersion: "2026-10-18.v1"
+
+  # ── 他人内容：告知—同意（PIPL 第 23 条）─────────────────────────────────
+  # 默认关闭。关闭时，任何 contentOwner=third-party 的路由都会导致进程拒绝启动。
+  thirdPartyConsent:
+    enabled: false
+    noticeVersion: "2026-10-18.v1"
+    persist: true
+    # 他人内容 + 出境：默认双重禁止，需要自行完成法定程序后才可打开
+    allowCrossBorder: false
+    consentKeywords: ["同意转发"]
+    crossBorderKeywords: ["同意出境"]
+    revokeKeywords: ["撤回同意"]
+    noticeCooldownMs: 600000
+    ttlDays: 30
+
+  # ── 不支持的消息类型：显式回执，不静默丢弃 ──────────────────────────────
+  unsupportedMedia:
+    replyNotice: true
+
+  # ── 回环防护 ────────────────────────────────────────────────────────────
+  loopGuard:
+    enabled: true
+    echoTtlMs: 300000
+    fingerprintWindowMs: 20000
+    # 1 = 本服务转发过的消息不再二次转发（默认，最安全）
+    maxHops: 1
+
+  logLevel: "info"
+
+# ── 路由矩阵 ───────────────────────────────────────────────────────────────
+# 语义：源平台:源会话 → 目标平台:目标会话（有向边）
+#   contentOwner：self（仅自己与自己其他账号之间的消息，必填）
+#                 third-party（转发他人聊天内容，必须开启上面的同意机制并补齐 receiver）
+#   group：同一逻辑链路；回环防护按 group 判定
+#   chatType：微信侧只能 private（群聊会被编译期 + 运行期双重拒绝）
+routes:
+  # 微信私聊 → QQ 指定会话（把下面两处 ID 换成你自己的）
+  - id: wx-private-to-qq
+    group: self-wx-qq
+    contentOwner: self
+    from:
+      platform: wechat
+      conversationId: "wxid_your_own_contact"
+      chatType: private
+    to:
+      - platform: qq
+        conversationId: "10001"
+        chatType: private
+
+  # QQ 指定会话 → 微信私聊（反向边；与上行同 group，环由 loopGuard 兜住）
+  - id: qq-to-wx-private
+    group: self-wx-qq
+    contentOwner: self
+    from:
+      platform: qq
+      conversationId: "10001"
+      chatType: private
+    to:
+      - platform: wechat
+        conversationId: "wxid_your_own_contact"
+        chatType: private
+
+  # ── 以下为出境示例，默认全部注释 ────────────────────────────────────────
+  # 开启条件（缺一不可，否则进程拒绝启动）：
+  #   1) compliance.telegramCrossBorder.enabled = true
+  #   2) operator 填你的署名、acknowledgedAt 填 ISO8601 时间
+  #   3) selfMessagesOnlyConfirmed = true
+  #   4) 你已自行完成 PIPL 第 38 条要求的出境路径与第 39 条告知/单独同意
+  #
+  # - id: wx-private-to-telegram
+  #   group: self-wx-tg
+  #   contentOwner: self
+  #   from:
+  #     platform: wechat
+  #     conversationId: "wxid_your_own_contact"
+  #     chatType: private
+  #   to:
+  #     - platform: telegram
+  #       conversationId: "123456789"
+  #       chatType: private
+  #
+  # - id: telegram-to-wx-private
+  #   group: self-wx-tg
+  #   contentOwner: self
+  #   from:
+  #     platform: telegram
+  #     conversationId: "123456789"
+  #     chatType: private
+  #   to:
+  #     - platform: wechat
+  #       conversationId: "wxid_your_own_contact"
+  #       chatType: private
+
+  # ── 他人内容示例（默认关闭；开启必须补 receiver 告知要素）──────────────
+  # - id: colleague-wx-to-qq
+  #   group: third-party-demo
+  #   contentOwner: third-party
+  #   from:
+  #     platform: wechat
+  #     conversationId: "wxid_colleague"
+  #     chatType: private
+  #   to:
+  #     - platform: qq
+  #       conversationId: "10002"
+  #       chatType: private
+  #       receiver:
+  #         name: "你的 QQ 小号（转发目的地）"
+  #         contact: "QQ 10002 / 联系邮箱 you@example.com"
+  #         purpose: "个人自用消息同步与备份，无商业用途"
+  #         method: "通过 EasyBot 网关调用 OneBot 接口以文本消息发送"
+  #         dataCategories: ["文本消息内容", "发送者平台标识", "发送时间"]
+  #         retention: "不保存正文；仅在本机内存中完成转发，日志不含内容"

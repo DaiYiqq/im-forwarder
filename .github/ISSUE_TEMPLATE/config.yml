@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔐 Security vulnerability (private)
+    url: https://github.com/DaiYiqq/im-forwarder/blob/main/SECURITY.md
+    about: Do NOT open a public issue for vulnerabilities. Read SECURITY.md for the private channels.
+  - name: 📇 Maintainer contact / 联系方式
+    url: https://github.com/DaiYiqq/im-forwarder/blob/main/CONTACT.md
+    about: Email, QQ, WeChat, GitHub — and what NOT to send through any channel.
+  - name: 📖 Compliance documentation
+    url: https://github.com/DaiYiqq/im-forwarder/blob/main/COMPLIANCE.md
+    about: Read the compliance design (PIPL Art. 23/38/39, platform terms) before reporting a compliance question.

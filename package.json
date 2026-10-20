@@ -1,0 +1,54 @@
+{
+  "name": "im-forwarder",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "微信(iLink/ClawBot) <-> QQ(NapCat) <-> Telegram(Bot API) 三平台消息转发路由服务（仅供技术研究学习，禁止商业用途）",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "戴亿 (DaiYi) <1703205607@qq.com> (https://github.com/DaiYiqq)",
+  "homepage": "https://github.com/DaiYiqq/im-forwarder#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaiYiqq/im-forwarder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DaiYiqq/im-forwarder/issues"
+  },
+  "keywords": [
+    "wechat",
+    "ilink",
+    "clawbot",
+    "qq",
+    "napcat",
+    "onebot11",
+    "telegram-bot-api",
+    "message-forwarding",
+    "router",
+    "compliance",
+    "pipl",
+    "non-commercial"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts --config config/config.yaml",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/test.mjs",
+    "test:one": "node --import tsx --test",
+    "compliance:scan": "node scripts/compliance-scan.mjs",
+    "check": "npm run typecheck && npm run compliance:scan && npm run test",
+    "mock": "tsx scripts/mock-gateway.ts"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "yaml": "^2.5.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

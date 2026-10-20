@@ -1,0 +1,96 @@
+name: 🐛 Bug report
+description: Something does not work as documented (do NOT paste real chat content or credentials)
+title: "bug: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Before submitting:
+        - **Never paste** real chat messages, conversation IDs, tokens, cookies or `consent.json` contents.
+        - Security issues → [SECURITY.md](https://github.com/DaiYiqq/im-forwarder/blob/main/SECURITY.md) (private).
+        - Read the *Known limitations* section of the README — some behaviours are intentional.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I read the README "Known limitations" section
+          required: true
+        - label: I ran `npx tsx src/main.ts --config <path> --self-check` and it passed (exit 0)
+          required: true
+        - label: I did not include any real chat content, account IDs or credentials
+          required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected area
+      options:
+        - config / preflight (refuses to start)
+        - routing matrix / policy chain
+        - gateway client / events (HTTP or WebSocket)
+        - loop guard
+        - consent flow
+        - text transform
+        - logging
+        - tests / CI
+        - documentation
+        - other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Output of `git rev-parse --short HEAD` or the release tag
+      placeholder: "0.1.0 / a1b2c3d"
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "Windows 11 / Node 24.21.0 / EasyBot gateway version X"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour (statuses / error codes only)
+      description: Paste only fields such as `event`, `status`, `errorCode`, `routeId`. No content.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: Config shape (redact IDs), sequence of events, mock-gateway scenario.
+      render: yaml
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log lines (redacted)
+      description: Only whitelisted fields. Remove `routeId` if it is sensitive to you.
+      render: json
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
