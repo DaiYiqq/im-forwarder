@@ -1,6 +1,6 @@
 # im-forwarder · WeChat ↔ QQ ↔ Telegram メッセージ転送ルーター
 
-[English](README.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md)
+[简体中文](README.md) | [English](README.en.md) | [日本語](README.ja.md) | [繁體中文](README.zh-TW.md)
 
 [![CI](https://github.com/DaiYiqq/im-forwarder/actions/workflows/ci.yml/badge.svg)](https://github.com/DaiYiqq/im-forwarder/actions/workflows/ci.yml)
 [![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
@@ -45,7 +45,7 @@
    - Telegram への転送は**デフォルトで無効**であり、設定で明示的に有効化する必要があります；
    - 有効化時には「**本人のメッセージのみを転送し、他人のチャット内容は転送しない**」ことの
      確認が必須です；
-   - 第 38 条・第 39 条との対応は [COMPLIANCE.md](COMPLIANCE.md) を参照してください。
+   - 第 38 条・第 39 条との対応は [COMPLIANCE.md](docs/en/COMPLIANCE.en.md) を参照してください。
 6. **ネットワークアクセスの適法性**：中国本土からの Telegram へのアクセスは関連法令の制約を
    受けます。利用者は自身のネットワークアクセスが適法であることを自ら確保してください。
    **本プロジェクトは回避手段を提供せず、推奨もしません**。プロキシ・トンネル・難読化などの
@@ -171,7 +171,7 @@ routes:
 重複 id・重複エッジは失敗、ループがある場合は `loopGuard` 有効が必須で、ループは group を跨げません。
 
 ループ防止は 3 層：**エコー `messageId` → 短期 HMAC フィンガープリント（メモリのみ）→
-ホップ予算**（デフォルト `maxHops: 1`）。詳細は [docs/ROUTING.md](docs/ROUTING.md)（中国語）。
+ホップ予算**（デフォルト `maxHops: 1`）。詳細は [docs/en/ROUTING.en.md](docs/en/ROUTING.en.md)（中国語）。
 
 ---
 
@@ -198,7 +198,7 @@ compliance:
 有効化し、各送信先に通知要素（`receiver.*`）を設定する必要があります。最初のメッセージは
 **転送されず**、通知が送られ、相手が同意キーワードを返信して初めて転送が始まります。
 越境チェーンでは**独立した 2 回の同意**が必要です。
-詳細：[docs/CONSENT-FLOW.md](docs/CONSENT-FLOW.md)（中国語）、[COMPLIANCE.md](COMPLIANCE.md)。
+詳細：[docs/en/CONSENT-FLOW.en.md](docs/en/CONSENT-FLOW.en.md)（中国語）、[COMPLIANCE.md](docs/en/COMPLIANCE.en.md)。
 
 ---
 
@@ -219,7 +219,7 @@ compliance:
 
 1. **ゲートウェイ契約の確認が必要**：差異は `gateway.fieldMap` と `gateway.send.path` で吸収します。
    プラットフォーム SDK の追加は**禁止**。
-   詳細：[docs/GATEWAY-CONTRACT.md](docs/GATEWAY-CONTRACT.md)（中国語）。
+   詳細：[docs/en/GATEWAY-CONTRACT.en.md](docs/en/GATEWAY-CONTRACT.en.md)（中国語）。
 2. **テキストのみ**：メディアは明示的にスキップ。ダウンロード・デコードは行いません。
 3. **グループチャット非対応**（全プラットフォーム。グループではメンバーごとの同意が取れないため）。
 4. **同意メカニズムの限界**：その個人チャットの返信者が同意したことしか証明できず、
@@ -247,7 +247,7 @@ npm test
 ```
 
 CI：[.github/workflows/ci.yml](.github/workflows/ci.yml)。
-独立監査レポート：[docs/AUDIT.md](docs/AUDIT.md)（8 項目の受入基準、ブラックボックスの終了コード、
+独立監査レポート：[docs/en/AUDIT.en.md](docs/en/AUDIT.en.md)（8 項目の受入基準、ブラックボックスの終了コード、
 PoC、是正記録。本文は中国語）。
 
 ---

@@ -1,5 +1,7 @@
 # im-forwarder 独立合规审计报告
 
+> **语言 / Language**：[简体中文](AUDIT.md) | [English](en/AUDIT.en.md)（英文摘要版 / English summary）
+
 | 项 | 内容 |
 |---|---|
 | 审计对象 | `D:\openclaw\im-forwarder`（代码版本 `0.1.0`，风险告知版本 `2026-10-18.v1`） |

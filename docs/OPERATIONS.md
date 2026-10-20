@@ -1,5 +1,7 @@
 # 运维清单（上线前 / 日常 / 应急）
 
+> **语言 / Language**：[简体中文](OPERATIONS.md) | [English](en/OPERATIONS.en.md)
+
 > 这不是"装完就能跑"的说明书，而是一份**上线前必须逐项打勾**的清单。
 > 大多数合规事故不是代码写错，而是"以为配好了"。
 
@@ -31,6 +33,9 @@
 ---
 
 ## B. 上线前 · 技术侧
+
+> 前置提示：本仓库只提供 `config/config.example.yaml`。正式运行前请先执行
+> `Copy-Item config/config.example.yaml config/config.yaml`，再按 B3/B4 填写令牌与自检。
 
 - [ ] **B1. 使用专门的小号登录 QQ（NapCat）**
       严禁主力账号。封号风险由你承担；不接受"先试试主力号"。
@@ -124,9 +129,13 @@ Get-Content logs\forwarder.log -Tail 200 | ForEach-Object { $_ | ConvertFrom-Jso
 
 ```powershell
 # 查看当前有多少条同意记录（只有元数据）
-Get-Content data\consent.json -Raw | ConvertFrom-Json |
-  Select-Object -ExpandProperty records | Get-Member -MemberType NoteProperty |
-  Measure-Object | Select-Object Count
+if (Test-Path data\consent.json) {
+  Get-Content data\consent.json -Raw | ConvertFrom-Json |
+    Select-Object -ExpandProperty records | Get-Member -MemberType NoteProperty |
+    Measure-Object | Select-Object Count
+} else {
+  "当前没有同意记录（未启用同意机制，或尚未产生记录）"
+}
 
 # 清理过期/全部撤回
 Remove-Item data\consent.json    # 重启后所有会话需要重新同意

@@ -1,5 +1,7 @@
 # 告知—同意流程（PIPL 第二十三条 / 第三十九条）
 
+> **语言 / Language**：[简体中文](CONSENT-FLOW.md) | [English](en/CONSENT-FLOW.en.md)
+
 对应源码：`src/compliance/consent.ts`、`consent-store.ts`、`src/pipeline/forward.ts`、`src/pipeline/notify.ts`。
 适用场景：路由声明 `contentOwner: third-party`（转发**他人**聊天内容），或境外链路需要第 39 条单独同意。
 

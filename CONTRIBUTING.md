@@ -83,10 +83,11 @@ git push -u origin fix/short-description
 
 ## 5. Docs & translations
 
-- English README is canonical: [README.md](README.md). 简体中文: [README.zh-CN.md](README.zh-CN.md).
-  日本語: [README.ja.md](README.ja.md).
-- Anything that changes behaviour must update the README section affected **in all three
-  languages** (or add `<!-- needs-translation -->` and open a translation issue).
+- Simplified Chinese README is canonical: [README.md](README.md). English: [README.en.md](README.en.md).
+  日本語: [README.ja.md](README.ja.md). 繁體中文: [README.zh-TW.md](README.zh-TW.md).
+  Long-form English docs: `docs/en/`.
+- Anything that changes behaviour must update the README section affected **in all languages**
+  (or add `<!-- needs-translation -->` and open a translation issue).
 - All READMEs must keep the non-commercial warning and the developer contact table.
 - See [TRANSLATIONS.md](TRANSLATIONS.md) for how to add a new language.
 
@@ -106,7 +107,7 @@ Never paste real chat content or credentials into an issue.
 4. 触碰合规逻辑的 PR 必须：更新 `COMPLIANCE.md`、必要时提升 `riskNoticeVersion`/`noticeVersion`、
    补**负向测试**、并由第二位维护者评审。
 5. 合并前 `npm run check` 必须全绿；日志一律走 `Logger`，禁止 `console.log`。
-6. 行为变更需同步更新三语 README（或标记 `<!-- needs-translation -->` 并开翻译 Issue），
-   且三语 README 都必须保留"非商用声明"与"开发者联系方式"。
+6. 行为变更需同步更新全部语言 README（或标记 `<!-- needs-translation -->` 并开翻译 Issue），
+   且所有语言 README 都必须保留"非商用声明"与"开发者联系方式"。
 7. Bug 用 Issue 模板提；安全问题按 [SECURITY.md](SECURITY.md) 私下报告；**不要在 Issue 里贴聊天内容或凭据**。
 8. 提交信息用英文（如 `fix(compliance): ...`），注释与用户可见文案用中文。

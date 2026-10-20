@@ -1,5 +1,7 @@
 # 路由矩阵设计与运行语义
 
+> **语言 / Language**：[简体中文](ROUTING.md) | [English](en/ROUTING.en.md)
+
 本文说明 `routes:` 配置的语义、编译期规则、运行时策略链与回环防护。
 对应源码：`src/routing/matrix.ts`、`src/routing/resolve.ts`、`src/routing/policy.ts`、`src/pipeline/loop-guard.ts`。
 
@@ -138,7 +140,7 @@ QQ  ──(网关回推 messageId=mock-1)──▶ 本服务
 | `blocked_consent_pending` 反复出现 | 对方未回复同意关键词 | 正常；对方回复「同意转发」后自动恢复 |
 | `send_failed` + `gateway_http_4xx` | 目标会话 ID 错、bot 未进会话、网关鉴权失败 | 查网关，不是本服务的问题 |
 | 转发成功但对方立刻又收到一次 | 回显未被识别 | 确认网关是否返回 `messageId`；降低 `fingerprintWindowMs` 不解决问题，应修网关 |
-| `ws_unmapped_event` 大量出现 | `fieldMap` 与网关字段不匹配 | 改 `gateway.fieldMap`，见 `docs/GATEWAY-CONTRACT.md` |
+| `ws_unmapped_event` 大量出现 | `fieldMap` 与网关字段不匹配 | 改 `gateway.fieldMap`，见 [GATEWAY-CONTRACT.md](GATEWAY-CONTRACT.md) |
 
 ---
 

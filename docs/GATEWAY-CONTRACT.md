@@ -1,5 +1,7 @@
 # 网关契约（Gateway Contract）
 
+> **语言 / Language**：[简体中文](GATEWAY-CONTRACT.md) | [English](en/GATEWAY-CONTRACT.en.md)
+
 > 本文件描述 **im-forwarder 与「EasyBot 统一 IM 网关」之间的内部契约**。
 >
 > **来源声明（重要）**：这份契约来自本项目对"统一 IM 网关"的用法约定，

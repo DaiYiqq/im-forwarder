@@ -8,9 +8,25 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- 繁體中文 README (`README.zh-TW.md`) — fourth language (community-maintained).
+- English translations of the long-form documents in `docs/en/`: `COMPLIANCE.en.md`,
+  `ROUTING.en.md`, `GATEWAY-CONTRACT.en.md`, `CONSENT-FLOW.en.md`, `OPERATIONS.en.md`,
+  plus an English audit summary (`AUDIT.en.md`).
+- Repository governance: GitHub Discussions, branch protection (required CI check
+  `typecheck / compliance-scan / test`, 1 approving review, linear history, no force-push/deletion),
+  private vulnerability reporting.
+
+### Changed
+- `README.md` is now **Simplified Chinese** (canonical, and the version GitHub displays).
+  English moved to `README.en.md`; `README.zh-CN.md` was removed.
+- `TRANSLATIONS.md`, `GOVERNANCE.md` and `CONTRIBUTING.md` updated for the new canonical language
+  (Simplified Chinese) and the four-language layout.
+- Chinese long-form docs now carry a bilingual header linking to their English translations.
+
 ### Planned
 - Optional plain-text prefix per route (opt-in, off by default) — pending RFC.
-- More translation languages (see [TRANSLATIONS.md](TRANSLATIONS.md)).
+- Additional languages (한국어 / Deutsch / Español) — see [TRANSLATIONS.md](TRANSLATIONS.md).
 
 ## [0.1.0] - 2026-10-18
 

@@ -59,11 +59,12 @@ months) or for breaking a compliance invariant.
 - Issues enabled; Discussions optional;
 - Private vulnerability reporting enabled (see [SECURITY.md](SECURITY.md));
 - No paid features or sponsorships that contradict the non-commercial license;
-- The repository must keep `LICENSE`, `COMPLIANCE.md`, `SECURITY.md` and all three READMEs.
+- The repository must keep `LICENSE`, `COMPLIANCE.md`, `SECURITY.md` and all README files.
 
 ## 6. Translations governance
 
-English (`README.md`) is canonical. Translations are community-maintained best effort.
+Simplified Chinese (`README.md`, also the version GitHub displays) is canonical. Other languages are
+community-maintained best effort; English long-form documents live in `docs/en/`.
 A translation may be outdated; it may **never** be less strict than the canonical version on:
 non-commercial use, WeChat private-only, NapCat risks, Telegram Bot API only, cross-border risk,
 and the developer contact section. See [TRANSLATIONS.md](TRANSLATIONS.md).
