@@ -97,6 +97,17 @@ read from an environment variable.
 
 > Installers for desktop (Windows/macOS/Linux) and mobile (PWA / Android APK) are documented in [docs/en/INSTALL.en.md](docs/en/INSTALL.en.md); no iOS package exists (see why there).
 
+## UI preview (real desktop app · demo data)
+
+<img src="demo/images/desktop-status.png" alt="desktop status tab" width="720" />
+
+<img src="demo/images/desktop-demo.gif" alt="desktop demo animation" width="720" />
+
+Captured from the **real Electron renderer** offscreen (`apps/desktop/scripts/capture-main.cjs`) with fixed
+demo data — **no real chat content and no tokens**. The live demo also offers EN/中文 switching, the
+cross-border gate playground, a routing-matrix editor and these screenshots:
+https://daiyiqq.github.io/im-forwarder/
+
 ## 3. Quick start
 
 ### Prerequisites

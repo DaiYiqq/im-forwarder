@@ -100,6 +100,17 @@
 
 > デスクトップ（Windows/macOS/Linux）とモバイル（PWA / Android APK）のインストール手順は [docs/en/INSTALL.en.md](docs/en/INSTALL.en.md)（英語）を参照。iOS 用のパッケージは提供していません。
 
+## UI プレビュー（実際のデスクトップ版 · デモデータ）
+
+<img src="demo/images/desktop-status.png" alt="デスクトップ版 ステータス画面" width="720" />
+
+<img src="demo/images/desktop-demo.gif" alt="デスクトップ版 操作アニメーション" width="720" />
+
+**実際の Electron レンダラー**をオフスクリーンで撮影したものです（`apps/desktop/scripts/capture-main.cjs`）。
+固定のデモデータのみで、**実際のチャット内容やトークンは含みません**。オンラインデモでは
+中国語/英語の切り替え、越境ゲート、ルーティングマトリクスの編集、スクリーンショットを確認できます：
+https://daiyiqq.github.io/im-forwarder/
+
 ## 3. クイックスタート
 
 ### 前提条件

@@ -104,7 +104,7 @@
     text("companion-static", state.staticAvailable ? "可用（companion-web）" : "缺失（/ 返回 503，API 仍可用）");
     text("companion-cred", state.credentialsPersistent ? "safeStorage 加密持久化" : "仅内存（safeStorage 不可用）");
     text("pair-code", state.pairCode || "—（已使用，点击右侧换一个）");
-    text("companion-port").value = String(state.port);
+    $("companion-port").value = String(state.port);
     $("lan-mode").checked = state.lanMode === true;
     $("lan-warning").hidden = !state.warning;
     text("lan-warning", state.warning || "");

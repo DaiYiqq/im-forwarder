@@ -40,13 +40,20 @@ jobs:
           test -f demo/index.html
           test -f demo/styles.css
           test -f demo/policy-demo.js
-          # 演示页面不得出现平台凭据类字段，也不得发起非静态请求
-          if grep -EIn "bot_token|ilink_user_id|api_hash|session_string|telethon|pyrogram|mtproto" demo/index.html demo/policy-demo.js; then
+          test -f demo/i18n.js
+          test -f demo/images/desktop-status.png
+          test -f demo/images/desktop-demo.gif
+          # 演示页面不得出现平台凭据类字段，也不得发起非静态请求或写入存储
+          if grep -EIn "bot_token|ilink_user_id|api_hash|session_string|telethon|pyrogram|mtproto" demo/index.html demo/policy-demo.js demo/i18n.js; then
             echo "::error::demo contains forbidden credential/login identifiers"
             exit 1
           fi
-          if grep -EIn "fetch\\(|XMLHttpRequest|WebSocket\\(" demo/index.html demo/policy-demo.js; then
-            echo "::error::demo must not perform network requests"
+          if grep -EIn "fetch\(|XMLHttpRequest|WebSocket\(|localStorage|sessionStorage|indexedDB" demo/index.html demo/policy-demo.js demo/i18n.js; then
+            echo "::error::demo must not perform network requests or persist anything"
+            exit 1
+          fi
+          if grep -EIn '<img[^>]+src="https?://' demo/index.html; then
+            echo "::error::demo images must be local static assets"
             exit 1
           fi
           echo "demo static sanity checks passed"

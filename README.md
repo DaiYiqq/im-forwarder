@@ -86,6 +86,16 @@
 
 > 桌面端（Windows/macOS/Linux）与移动端（PWA / Android APK）安装包说明见 [docs/INSTALL.md](docs/INSTALL.md)；iOS 不提供安装包（原因见该文档）。
 
+## 界面预览（真实桌面端 · 演示数据）
+
+<img src="demo/images/desktop-status.png" alt="桌面端状态页" width="720" />
+
+<img src="demo/images/desktop-demo.gif" alt="桌面端操作动图" width="720" />
+
+截图由**真实 Electron 渲染进程**离屏截取（`apps/desktop/scripts/capture-main.cjs`），数据为固定演示数据，
+**不含任何真实聊天内容或令牌**。在线 Demo 支持中英切换、出境闸门演练、路由矩阵编辑与截图预览：
+https://daiyiqq.github.io/im-forwarder/
+
 ## 三、快速开始
 
 ### 前置条件

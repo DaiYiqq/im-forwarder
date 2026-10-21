@@ -5,297 +5,382 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="index,follow" />
 <title>im-forwarder · 在线演示（合规闸门 / 路由矩阵）</title>
-<meta name="description" content="im-forwarder 在线演示：纯静态、无后端、不连接任何平台。演示合规闸门决策链、路由矩阵与伴生控制台。" />
+<meta name="description" content="im-forwarder 在线演示：纯静态、无后端、不连接任何平台。演示合规闸门决策链、出境闸门、路由矩阵编辑与真实桌面端界面。" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231b2430'/%3E%3Cpath d='M16 24h32M16 32h32M16 40h20' stroke='%234cc9a0' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
 </head>
 <body>
 <header class="top">
   <div class="wrap">
-    <p class="crumb"><a href="https://github.com/DaiYiqq/im-forwarder">im-forwarder</a> · 在线演示</p>
-    <h1>三平台消息转发 · 合规闸门演示</h1>
-    <p class="sub">WeChat (iLink) ↔ QQ (NapCat) ↔ Telegram (Bot API) — 演示策略链为什么要拦截</p>
+    <div class="top-row">
+      <p class="crumb" data-i18n="hero.crumb">im-forwarder · 在线演示</p>
+      <button type="button" class="lang-btn" id="lang-toggle" data-i18n-title="lang.toggleTitle" data-i18n="lang.toggle">EN</button>
+    </div>
+    <h1 data-i18n="hero.title">三平台消息转发 · 合规闸门演示</h1>
+    <p class="sub" data-i18n="hero.sub">WeChat (iLink) ↔ QQ (NapCat) ↔ Telegram (Bot API) — 演示策略链为什么要拦截</p>
     <ul class="badges">
-      <li class="b-static">纯静态 · 无后端</li>
-      <li class="b-safe">不连接任何平台</li>
-      <li class="b-safe">不发送任何消息</li>
-      <li class="b-safe">不收集任何数据</li>
+      <li class="b-static" data-i18n="badge.static">纯静态 · 无后端</li>
+      <li class="b-safe" data-i18n="badge.noplat">不连接任何平台</li>
+      <li class="b-safe" data-i18n="badge.nomsg">不发送任何消息</li>
+      <li class="b-safe" data-i18n="badge.nodata">不收集任何数据</li>
     </ul>
     <p class="links">
-      <a href="https://github.com/DaiYiqq/im-forwarder">GitHub 仓库</a>
-      <a href="https://github.com/DaiYiqq/im-forwarder/releases/tag/v0.2.0">下载安装包</a>
-      <a href="https://github.com/DaiYiqq/im-forwarder/blob/main/docs/INSTALL.md">安装指南</a>
-      <a href="https://github.com/DaiYiqq/im-forwarder/blob/main/COMPLIANCE.md">合规设计</a>
+      <a href="https://github.com/DaiYiqq/im-forwarder" data-i18n="link.repo">GitHub 仓库</a>
+      <a href="https://github.com/DaiYiqq/im-forwarder/releases/tag/v0.2.0" data-i18n="link.release">下载安装包</a>
+      <a href="https://github.com/DaiYiqq/im-forwarder/blob/main/docs/INSTALL.md" data-i18n="link.install">安装指南</a>
+      <a href="https://github.com/DaiYiqq/im-forwarder/blob/main/COMPLIANCE.md" data-i18n="link.compliance">合规设计</a>
     </p>
   </div>
 </header>
 
 <div class="notice wrap" role="note">
-  <strong>这是演示页，不是可用服务。</strong>
-  所有判定在浏览器本地计算，使用固定假数据；页面不会请求任何平台、不读取你的令牌、不记录输入。
-  真实转发需要：桌面端（宿主）+ 你自己的 EasyBot 网关 + 已授权的平台账号。
-  本项目<strong>禁止商业用途</strong>（MIT + Commons Clause）。
+  <strong data-i18n="notice.title">这是演示页，不是可用服务。</strong>
+  <span data-i18n="notice.body">所有判定在浏览器本地计算，使用固定假数据；页面不会请求任何平台、不读取你的令牌、不记录输入。真实转发需要：桌面端（宿主）+ 你自己的 EasyBot 网关 + 已授权的平台账号。本项目禁止商业用途（MIT + Commons Clause）。</span>
 </div>
 
-<nav class="tabs wrap" aria-label="演示分区">
-  <button class="tab is-active" data-panel="policy">① 决策链演练</button>
-  <button class="tab" data-panel="gate">② 出境闸门</button>
-  <button class="tab" data-panel="matrix">③ 路由矩阵</button>
-  <button class="tab" data-panel="companion">④ 伴生控制台（模拟）</button>
+<nav class="tabs wrap" aria-label="demo sections">
+  <button class="tab is-active" data-panel="policy"><span data-i18n="tab.policy">① 决策链演练</span></button>
+  <button class="tab" data-panel="gate"><span data-i18n="tab.gate">② 出境闸门</span></button>
+  <button class="tab" data-panel="matrix"><span data-i18n="tab.matrix">③ 路由矩阵</span></button>
+  <button class="tab" data-panel="editor"><span data-i18n="tab.editor">④ 矩阵编辑器</span></button>
+  <button class="tab" data-panel="preview"><span data-i18n="tab.preview">⑤ 界面截图</span></button>
 </nav>
 
 <main class="wrap">
-  <!-- ① 决策链 -->
-  <section id="panel-policy" class="panel is-active" aria-labelledby="policy-title">
-    <h2 id="policy-title">决策链演练：消息会被转发，还是被拦下？</h2>
-    <p class="hint">点击场景，查看策略链逐级判定（与源码 <code>src/routing/policy.ts</code> 同序的简化镜像）。</p>
+  <section id="panel-policy" class="panel is-active">
+    <h2 data-i18n="policy.title">决策链演练：消息会被转发，还是被拦下？</h2>
+    <p class="hint" data-i18n="policy.hint">点击场景，查看策略链逐级判定（与源码 src/routing/policy.ts 同序的简化镜像）。</p>
     <div id="scenario-list" class="scenario-grid"></div>
     <div class="result-card" id="policy-result" aria-live="polite">
-      <p class="placeholder">选择一个场景开始。</p>
+      <p class="placeholder" data-i18n="policy.choose">选择一个场景开始。</p>
     </div>
   </section>
 
-  <!-- ② 出境闸门 -->
-  <section id="panel-gate" class="panel" aria-labelledby="gate-title">
-    <h2 id="gate-title">数据出境闸门（PIPL 第 38 / 39 条）</h2>
-    <p class="hint">
-      真实实现里，只要存在“目标平台 = Telegram”的路由而闸门未完全打开，进程会
-      <strong>拒绝启动（exit 78）</strong>。下面是同一套五要素判定的在线演示。
-    </p>
+  <section id="panel-gate" class="panel">
+    <h2 data-i18n="gate.title">数据出境闸门（PIPL 第 38 / 39 条）</h2>
+    <p class="hint" data-i18n="gate.hint">真实实现里，只要存在“目标平台 = Telegram”的路由而闸门未完全打开，进程会拒绝启动（exit 78）。下面是同一套五要素判定的在线演示。</p>
     <form id="gate-form" class="gate-form">
-      <label class="check"><input type="checkbox" id="gate-enabled" /> <span><code>enabled</code>：显式开启出境</span></label>
-      <label class="field"><span><code>operator</code>：开通者署名</span><input type="text" id="gate-operator" placeholder="例如：戴亿" /></label>
-      <label class="field"><span><code>acknowledgedAt</code>：确认时间（ISO 8601）</span><input type="text" id="gate-time" placeholder="2026-10-21T09:00:00+08:00" /></label>
-      <label class="check"><input type="checkbox" id="gate-self" /> <span><code>selfMessagesOnlyConfirmed</code>：仅转发本人自己的消息</span></label>
-      <label class="check"><input type="checkbox" id="gate-version" /> <span><code>riskNoticeVersion</code> 与当前告知版本一致</span></label>
+      <label class="check"><input type="checkbox" id="gate-enabled" /> <span data-i18n="gate.enabled">enabled：显式开启出境</span></label>
+      <label class="field"><span data-i18n="gate.operator">operator：开通者署名</span><input type="text" id="gate-operator" data-i18n-placeholder="gate.operatorPh" placeholder="例如：戴亿" /></label>
+      <label class="field"><span data-i18n="gate.time">acknowledgedAt：确认时间（ISO 8601）</span><input type="text" id="gate-time" data-i18n-placeholder="gate.timePh" placeholder="2026-10-21T09:00:00+08:00" /></label>
+      <label class="check"><input type="checkbox" id="gate-self" /> <span data-i18n="gate.self">selfMessagesOnlyConfirmed：仅转发本人自己的消息</span></label>
+      <label class="check"><input type="checkbox" id="gate-version" /> <span data-i18n="gate.version">riskNoticeVersion 与当前告知版本一致</span></label>
     </form>
     <div class="result-card" id="gate-result" aria-live="polite"></div>
-    <p class="hint small">
-      注意：真实前置检查还会拒绝“他人内容 + 出境”“群聊路由”“third-party 缺告知要素”等情况；
-      这里仅演示出境闸门本身的五要素。
-    </p>
+    <p class="hint small" data-i18n="gate.note">注意：真实前置检查还会拒绝“他人内容 + 出境”“群聊路由”“third-party 缺告知要素”等情况；这里仅演示出境闸门本身的五要素。</p>
   </section>
 
-  <!-- ③ 路由矩阵 -->
-  <section id="panel-matrix" class="panel" aria-labelledby="matrix-title">
-    <h2 id="matrix-title">路由矩阵：有向边，不是两两硬编码</h2>
-    <p class="hint">配置项语义：<code>源平台:源会话 → 目标平台:目标会话</code>；环必须由回环防护兜住。</p>
-    <table class="matrix">
-      <thead>
-        <tr><th>路由</th><th>源</th><th>目标</th><th>出境边</th><th>内容归属</th><th>编译结果</th></tr>
-      </thead>
-      <tbody id="matrix-body"></tbody>
-    </table>
-    <div class="loop-note">
-      <strong>默认双向链路（微信 ↔ QQ）天然构成 1 个环</strong>：因此
-      <code>loopGuard.enabled</code> 必须保持 <code>true</code>；关闭它会被前置检查拒绝
-      （<code>LOOP_GUARD_REQUIRED</code>）。回环防护三层：回显 messageId → 短期 HMAC 指纹 → hop 预算。
+  <section id="panel-matrix" class="panel">
+    <h2 data-i18n="matrix.title">路由矩阵：有向边，不是两两硬编码</h2>
+    <p class="hint" data-i18n="matrix.hint">配置项语义：源平台:源会话 → 目标平台:目标会话；环必须由回环防护兜住。</p>
+    <div class="table-scroll">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th data-i18n="matrix.th.route">路由</th>
+            <th data-i18n="matrix.th.source">源</th>
+            <th data-i18n="matrix.th.target">目标</th>
+            <th data-i18n="matrix.th.cross">出境边</th>
+            <th data-i18n="matrix.th.owner">内容归属</th>
+            <th data-i18n="matrix.th.result">编译结果</th>
+          </tr>
+        </thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
     </div>
+    <div class="loop-note" data-i18n="matrix.note">默认双向链路（微信 ↔ QQ）天然构成 1 个环：因此 loopGuard.enabled 必须保持 true；关闭它会被前置检查拒绝（LOOP_GUARD_REQUIRED）。回环防护三层：回显 messageId → 短期 HMAC 指纹 → hop 预算。</div>
   </section>
 
-  <!-- ④ 伴生控制台 -->
-  <section id="panel-companion" class="panel" aria-labelledby="companion-title">
-    <h2 id="companion-title">移动伴生控制台（模拟数据）</h2>
-    <p class="hint">
-      真实形态：桌面端运行转发核心，手机通过局域网连接桌面端的伴生服务（默认
-      <code>127.0.0.1:17871</code>，局域网需显式开启），用 6 位配对码换取令牌。
-      下面全部是<strong>静态假数据</strong>，页面不会发起任何请求。
-    </p>
-    <div class="cards">
-      <div class="card"><p class="k">运行状态</p><p class="v ok">● 运行中</p></div>
-      <div class="card"><p class="k">路由数</p><p class="v">2</p></div>
-      <div class="card"><p class="k">已转发</p><p class="v">128</p></div>
-      <div class="card"><p class="k">失败</p><p class="v">0</p></div>
-      <div class="card"><p class="k">跳过</p><p class="v">3</p></div>
-      <div class="card"><p class="k">出境闸门</p><p class="v">CLOSED</p></div>
+  <section id="panel-editor" class="panel">
+    <h2 data-i18n="editor.title">路由矩阵编辑器（可视化，实时编译）</h2>
+    <p class="hint" data-i18n="editor.hint">增删改路由，实时看到简化版编译结果。所有数据只在内存中，刷新即恢复；导出/保存请用桌面端配置面板。</p>
+    <div class="toolbar">
+      <button type="button" id="editor-add" class="btn-primary" data-i18n="editor.add">＋ 添加路由</button>
+      <button type="button" id="editor-reset" class="btn" data-i18n="editor.reset">恢复演示数据</button>
+      <button type="button" id="editor-clear" class="btn" data-i18n="editor.clear">清空</button>
     </div>
-    <div class="pair">
-      <p>配对码（模拟）：<strong class="code">482913</strong> <span class="small">10 分钟有效 · 一次性 · 失败限流 5 次/分钟</span></p>
+    <div class="table-scroll">
+      <table class="editor">
+        <thead>
+          <tr>
+            <th data-i18n="editor.th.id">id</th>
+            <th data-i18n="editor.th.group">group</th>
+            <th data-i18n="editor.th.owner">contentOwner</th>
+            <th data-i18n="editor.th.from">源会话</th>
+            <th data-i18n="editor.th.to">目标会话</th>
+            <th data-i18n="editor.th.delete">删除</th>
+          </tr>
+        </thead>
+        <tbody id="editor-body"></tbody>
+      </table>
     </div>
-    <table class="logs">
-      <thead><tr><th>时间</th><th>事件</th><th>状态</th><th>路由</th><th>来源 → 目标</th></tr></thead>
-      <tbody>
-        <tr><td>09:00:12</td><td>forward</td><td class="st-ok">forwarded</td><td>wx-private-to-qq</td><td>wechat → qq</td></tr>
-        <tr><td>09:00:31</td><td>forward</td><td class="st-skip">skipped_unsupported_kind</td><td>wx-private-to-qq</td><td>wechat → qq</td></tr>
-        <tr><td>09:01:04</td><td>forward</td><td class="st-skip">skipped_group_forbidden</td><td>—</td><td>wechat → —</td></tr>
-        <tr><td>09:02:18</td><td>consent</td><td class="st-warn">blocked_consent_pending</td><td>colleague-wx-to-qq</td><td>wechat → qq</td></tr>
-        <tr><td>09:03:07</td><td>forward</td><td class="st-ok">forwarded</td><td>qq-to-wx-private</td><td>qq → wechat</td></tr>
-      </tbody>
-    </table>
-    <p class="hint small">日志只含白名单字段：时间 / 事件 / 状态 / 路由 / 平台 / 错误码 / 延迟。<strong>没有消息正文、没有会话 ID。</strong></p>
+    <p class="hint small" data-i18n="editor.limit">编辑器每条路由只支持 1 个目标；真实配置支持最多 8 个目标。</p>
+    <div class="result-card" id="editor-result" aria-live="polite"></div>
+  </section>
+
+  <section id="panel-preview" class="panel">
+    <h2 data-i18n="preview.title">真实桌面端界面（演示数据）</h2>
+    <p class="hint" data-i18n="preview.hint">以下截图由真实 Electron 渲染进程离屏截取，数据为固定演示数据；不含任何真实聊天内容或令牌。</p>
+    <div class="shots">
+      <figure><img src="images/desktop-status.png" alt="desktop status" loading="lazy" /><figcaption data-i18n="preview.status">状态页：运行中、路由与伴生服务</figcaption></figure>
+      <figure><img src="images/desktop-config.png" alt="desktop config" loading="lazy" /><figcaption data-i18n="preview.config">配置页：严格校验 + 违规提示</figcaption></figure>
+      <figure><img src="images/desktop-logs.png" alt="desktop logs" loading="lazy" /><figcaption data-i18n="preview.logs">日志页：仅白名单字段（无正文）</figcaption></figure>
+      <figure><img src="images/desktop-about.png" alt="desktop about" loading="lazy" /><figcaption data-i18n="preview.about">关于页：版本、许可与联系方式</figcaption></figure>
+    </div>
+    <figure class="gif">
+      <img src="images/desktop-demo.gif" alt="desktop animated demo" loading="lazy" />
+      <figcaption data-i18n="preview.gif">动图：依次切换状态 / 配置 / 日志 / 关于</figcaption>
+    </figure>
+    <p class="hint small" data-i18n="preview.note">截图脚本：apps/desktop/scripts/capture-main.cjs（offscreen 渲染 + mock preload），可重复生成。</p>
   </section>
 </main>
 
 <footer class="foot">
   <div class="wrap">
-    <p class="warn">⚠️ 仅供技术研究学习 · 禁止商业用途（MIT + Commons Clause）· 微信侧仅官方 iLink 且仅私聊 · QQ NapCat 非官方通道必须用小号 · Telegram 出境默认关闭</p>
-    <p class="small">
-      本页与源码的关系：演示策略是 <code>src/routing/policy.ts</code> 的简化镜像，
-      自检见 <code>demo/policy-demo.test.mjs</code>；真实行为以仓库源码与测试为准。
-    </p>
-    <p class="small">开发者：戴亿（DaiYi）· <a href="https://github.com/DaiYiqq">GitHub</a> · 1703205607@qq.com · daiy91004@gmail.com · QQ 1703205607 · 微信 daiyi091004</p>
+    <p class="warn" data-i18n="footer.warn">⚠️ 仅供技术研究学习 · 禁止商业用途（MIT + Commons Clause）· 微信侧仅官方 iLink 且仅私聊 · QQ NapCat 非官方通道必须用小号 · Telegram 出境默认关闭</p>
+    <p class="small" data-i18n="footer.relation">本页与源码的关系：演示策略是 src/routing/policy.ts 的简化镜像，自检见 demo/policy-demo.test.mjs；真实行为以仓库源码与测试为准。</p>
+    <p class="small"><span data-i18n="footer.contact">开发者：戴亿（DaiYi）· GitHub · 1703205607@qq.com · daiy91004@gmail.com · QQ 1703205607 · 微信 daiyi091004</span></p>
   </div>
 </footer>
 
 <script src="policy-demo.js"></script>
+<script src="i18n.js"></script>
 <script>
 (function () {
   "use strict";
-  const P = window.PolicyDemo;
+  var P = window.PolicyDemo;
+  var I18N = window.DEMO_I18N;
+  var state = { lang: "zh", scenario: null, gate: null, editor: P.defaultEditorRoutes() };
+
+  function t(key) { return (I18N[state.lang] && I18N[state.lang][key]) || key; }
+  function tl(obj) { return obj ? obj[state.lang] || obj.zh : ""; }
+  function $(id) { return document.getElementById(id); }
+  function esc(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function applyI18n() {
+    document.documentElement.lang = state.lang === "zh" ? "zh-CN" : "en";
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (node) {
+      var key = node.getAttribute("data-i18n");
+      if (key !== "lang.toggle") node.textContent = t(key);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-placeholder]"), function (node) {
+      node.setAttribute("placeholder", t(node.getAttribute("data-i18n-placeholder")));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-title]"), function (node) {
+      node.setAttribute("title", t(node.getAttribute("data-i18n-title")));
+    });
+    $("lang-toggle").textContent = t("lang.toggle");
+    renderScenarios();
+    if (state.scenario) renderScenario(state.scenario, true);
+    renderGate();
+    renderMatrix();
+    renderEditor();
+  }
 
   // ── Tabs ──────────────────────────────────────────────────────────────
-  const tabs = Array.from(document.querySelectorAll(".tab"));
-  const panels = Array.from(document.querySelectorAll(".panel"));
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((item) => item.classList.toggle("is-active", item === tab));
-      panels.forEach((panel) => panel.classList.toggle("is-active", panel.id === "panel-" + tab.dataset.panel));
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (tab) {
+    tab.addEventListener("click", function () {
+      Array.prototype.forEach.call(document.querySelectorAll(".tab"), function (item) { item.classList.toggle("is-active", item === tab); });
+      Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (panel) { panel.classList.toggle("is-active", panel.id === "panel-" + tab.getAttribute("data-panel")); });
     });
   });
 
   // ── ① 决策链 ──────────────────────────────────────────────────────────
-  const list = document.getElementById("scenario-list");
-  const result = document.getElementById("policy-result");
-  const STATUS_TEXT = {
-    forwarded: "转发（模拟）",
-    skipped_group_forbidden: "拦截：群聊",
-    skipped_unsupported_kind: "跳过：不支持的类型",
-    skipped_self: "丢弃：自身消息",
-    skipped_bot: "丢弃：机器人消息",
-    skipped_no_route: "忽略：无路由",
-    blocked_cross_border: "阻断：出境闸门",
-    blocked_consent_pending: "阻断：等待同意",
-    skipped_loop_suspected: "丢弃：疑似回环",
-  };
   function statusClass(status) {
     if (status === "forwarded") return "st-ok";
-    if (status.startsWith("blocked")) return "st-warn";
+    if (status.indexOf("blocked") === 0) return "st-warn";
     return "st-skip";
   }
-  function renderScenario(scenario, button) {
-    list.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === button));
-    const output = P.decide(scenario);
-    const stepRows = output.steps
-      .map((step) => {
-        const icon = step.status === "pass" ? "✓" : step.status === "fail" ? "✗" : "–";
-        return `<li class="step ${step.status}"><span class="icon">${icon}</span><span class="sid">${step.id}</span><span class="stitle">${step.title}</span><span class="sdetail">${escapeHtml(step.detail)}</span></li>`;
-      })
-      .join("");
-    const notice = output.notice ? `<div class="notice-inline"><strong>回执/告知（模拟）：</strong><pre>${escapeHtml(output.notice)}</pre></div>` : "";
-    const payload = output.sentPayload
-      ? `<details class="io"><summary>模拟发送请求（网关 REST）</summary><pre>${escapeHtml(JSON.stringify(output.sentPayload, null, 2))}</pre></details>`
-      : "";
-    result.innerHTML = `
-      <div class="result-head">
-        <span class="tag ${statusClass(output.status)}">${STATUS_TEXT[output.status] || output.status}</span>
-        <h3>${escapeHtml(output.title)}</h3>
-        <code class="code">${output.status}</code>
-      </div>
-      <ol class="steps">${stepRows}</ol>
-      ${notice}${payload}
-      <details class="io"><summary>日志（白名单字段，无正文）</summary><pre>${escapeHtml(JSON.stringify(output.log, null, 2))}</pre></details>
-    `;
+  function renderScenarios() {
+    var list = $("scenario-list");
+    var active = state.scenario && state.scenario.id;
+    list.textContent = "";
+    P.scenarios.forEach(function (scenario) {
+      var button = document.createElement("button");
+      button.type = "button";
+      button.className = "scenario" + (scenario.id === active ? " is-active" : "");
+      var label = document.createElement("span");
+      label.className = "sc-label";
+      label.textContent = tl(scenario.label);
+      var desc = document.createElement("span");
+      desc.className = "sc-desc";
+      desc.textContent = tl(scenario.desc);
+      button.appendChild(label);
+      button.appendChild(desc);
+      button.addEventListener("click", function () { state.scenario = scenario; renderScenarios(); renderScenario(scenario); });
+      list.appendChild(button);
+    });
   }
-  P.scenarios.forEach((scenario) => {
-    const button = document.createElement("button");
-    button.className = "scenario";
-    button.innerHTML = `<span class="sc-label">${escapeHtml(scenario.label)}</span><span class="sc-desc">${escapeHtml(scenario.desc)}</span>`;
-    button.addEventListener("click", () => renderScenario(scenario, button));
-    list.appendChild(button);
-  });
+  function renderScenario(scenario, keepQuiet) {
+    var out = P.decide(scenario);
+    var steps = out.steps.map(function (step) {
+      var icon = step.status === "pass" ? "✓" : step.status === "fail" ? "✗" : "–";
+      return '<li class="step ' + step.status + '"><span class="icon">' + icon + '</span><span class="sid">' + step.id + '</span><span class="stitle">' + esc(tl(step.title)) + '</span><span class="sdetail">' + esc(tl(step.detail)) + '</span></li>';
+    }).join("");
+    var notice = out.notice ? '<div class="notice-inline"><strong>' + esc(t("io.notice")) + '：</strong><pre>' + esc(tl(out.notice)) + '</pre></div>' : "";
+    var payload = out.sentPayload ? '<details class="io"><summary>' + esc(t("io.sent")) + '</summary><pre>' + esc(JSON.stringify(out.sentPayload, null, 2)) + '</pre></details>' : "";
+    $("policy-result").innerHTML =
+      '<div class="result-head"><span class="tag ' + statusClass(out.status) + '">' + esc(t("status." + out.status) || out.status) + '</span><h3>' + esc(tl(out.title)) + '</h3><code class="code">' + out.status + '</code></div>' +
+      '<ol class="steps">' + steps + '</ol>' + notice + payload +
+      '<details class="io"><summary>' + esc(t("io.log")) + '</summary><pre>' + esc(JSON.stringify(out.log, null, 2)) + '</pre></details>';
+    void keepQuiet;
+  }
 
   // ── ② 出境闸门 ────────────────────────────────────────────────────────
-  const gateForm = document.getElementById("gate-form");
-  const gateResult = document.getElementById("gate-result");
-  const gateInputs = {
-    enabled: document.getElementById("gate-enabled"),
-    operator: document.getElementById("gate-operator"),
-    acknowledgedAt: document.getElementById("gate-time"),
-    selfMessagesOnlyConfirmed: document.getElementById("gate-self"),
-    riskNoticeVersion: document.getElementById("gate-version"),
-  };
   function readGate() {
-    return {
-      enabled: gateInputs.enabled.checked,
-      operator: gateInputs.operator.value,
-      acknowledgedAt: gateInputs.acknowledgedAt.value,
-      selfMessagesOnlyConfirmed: gateInputs.selfMessagesOnlyConfirmed.checked,
-      riskNoticeVersion: gateInputs.riskNoticeVersion.checked ? P.RISK_NOTICE_VERSION : "old-version",
+    state.gate = {
+      enabled: $("gate-enabled").checked,
+      operator: $("gate-operator").value,
+      acknowledgedAt: $("gate-time").value,
+      selfMessagesOnlyConfirmed: $("gate-self").checked,
+      riskNoticeVersion: $("gate-version").checked ? P.RISK_NOTICE_VERSION : "old-version",
     };
+    return state.gate;
   }
   function renderGate() {
-    const gate = readGate();
-    const evaluation = P.evaluateCrossBorderGate(gate);
-    const exitCode = evaluation.open ? 0 : 78;
-    const reasons = evaluation.reasons.length
-      ? `<ul class="reasons">${evaluation.reasons.map((reason) => `<li>${escapeHtml(reason)}</li>`).join("")}</ul>`
-      : `<p class="ok-line">五要素齐备：出境路由可以加载（但仍需你自行完成 PIPL 第 38 条的实体程序）。</p>`;
-    gateResult.innerHTML = `
-      <div class="result-head">
-        <span class="tag ${evaluation.open ? "st-ok" : "st-warn"}">闸门 ${evaluation.open ? "OPEN" : "CLOSED"}</span>
-        <h3>${evaluation.open ? "配置通过（演示）" : "进程拒绝启动：exit 78"}</h3>
-        <code class="code">EXIT ${exitCode}</code>
-      </div>
-      ${reasons}
-      <p class="small">真实实现：<code>src/compliance/gates.ts › evaluateCrossBorderGate</code> + <code>src/compliance/preflight.ts</code>。</p>
-    `;
+    var result = P.evaluateCrossBorderGate(state.gate || { enabled: false });
+    var reasons = result.reasons.length
+      ? '<ul class="reasons">' + result.reasons.map(function (reason) { return "<li>" + esc(tl(reason)) + "</li>"; }).join("") + "</ul>"
+      : "";
+    $("gate-result").innerHTML =
+      '<div class="result-head"><span class="tag ' + (result.open ? "st-ok" : "st-warn") + '">' + esc(t(result.open ? "gate.open" : "gate.closed")) + '</span><h3>' + esc(t(result.open ? "gate.pass" : "gate.refuse")) + '</h3><code class="code">EXIT ' + (result.open ? 0 : 78) + '</code></div>' + reasons;
   }
-  gateForm.addEventListener("input", renderGate);
-  gateForm.addEventListener("change", renderGate);
-  renderGate();
 
   // ── ③ 路由矩阵 ────────────────────────────────────────────────────────
-  const matrixBody = document.getElementById("matrix-body");
-  const matrixRows = [
-    { route: "wx-private-to-qq", from: "微信私聊", to: "QQ 私聊", routeObj: P.routes.wxSelfToQq },
-    {
-      route: "qq-to-wx-private",
-      from: "QQ 私聊",
-      to: "微信私聊",
-      routeObj: {
-        from: { platform: "qq", conversationId: "10001", chatType: "private" },
-        to: [{ platform: "wechat", conversationId: "wxid_self", chatType: "private" }],
+  function matrixRows() {
+    var L = function (zh, en) { return { zh: zh, en: en }; };
+    return [
+      { route: P.routes.wxSelfToQq, from: L("微信私聊", "WeChat private"), to: L("QQ 私聊", "QQ private") },
+      {
+        route: { id: "qq-to-wx-private", group: "self-wx-qq", contentOwner: "self", from: { platform: "qq", conversationId: "10001", chatType: "private" }, to: [{ platform: "wechat", conversationId: "wxid_demo_account", chatType: "private" }] },
+        from: L("QQ 私聊", "QQ private"),
+        to: L("微信私聊", "WeChat private"),
       },
-    },
-    { route: "wx-private-to-telegram", from: "微信私聊", to: "Telegram 私聊", routeObj: P.routes.wxToTelegram },
-    { route: "wx-group-route（非法示例）", from: "微信群聊", to: "QQ 私聊", routeObj: P.routes.wxGroup },
-    { route: "colleague-wx-to-qq", from: "微信私聊（他人）", to: "QQ 私聊", routeObj: P.routes.thirdParty },
-  ];
-  function compileResult(route, crossBorder) {
-    const shapeErrors = P.checkRouteShape(route);
-    if (shapeErrors.length) return { ok: false, text: shapeErrors[0] };
-    if (crossBorder) {
-      const gate = P.evaluateCrossBorderGate({ enabled: false, operator: "", acknowledgedAt: "", selfMessagesOnlyConfirmed: false, riskNoticeVersion: "" });
-      if (!gate.open) return { ok: false, text: "CROSS_BORDER_GATE_CLOSED（默认）" };
-    }
-    return { ok: true, text: "可加载（仍需通过前置检查）" };
+      { route: P.routes.wxToTelegram, from: L("微信私聊", "WeChat private"), to: L("Telegram 私聊", "Telegram private") },
+      { route: P.routes.wxGroup, from: L("微信群聊", "WeChat group"), to: L("QQ 私聊", "QQ private") },
+      { route: P.routes.thirdParty, from: L("微信私聊（他人）", "WeChat private (third party)"), to: L("QQ 私聊", "QQ private") },
+    ];
   }
-  matrixRows.forEach((row) => {
-    const crossBorder = row.routeObj.to.some((target) => target.platform === "telegram");
-    const compiled = compileResult(row.routeObj, crossBorder);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><code>${escapeHtml(row.route)}</code></td>
-      <td>${row.from}</td>
-      <td>${row.to}</td>
-      <td>${crossBorder ? '<span class="tag st-warn">是</span>' : "否"}</td>
-      <td>${row.routeObj.contentOwner === "third-party" ? '<span class="tag st-warn">third-party</span>' : "self"}</td>
-      <td>${compiled.ok ? '<span class="tag st-ok">OK</span>' : `<span class="tag st-bad">拒绝</span> <span class="small">${escapeHtml(compiled.text)}</span>`}</td>
-    `;
-    matrixBody.appendChild(tr);
+  function renderMatrix() {
+    var body = $("matrix-body");
+    body.textContent = "";
+    matrixRows().forEach(function (row) {
+      var compiled = P.compileMatrix([row.route], { gate: state.gate || { enabled: false }, consentEnabled: false, loopGuardEnabled: true });
+      var cross = row.route.to.some(function (target) { return target.platform === "telegram"; });
+      var tr = document.createElement("tr");
+      var resultCell = compiled.ok
+        ? '<span class="tag st-ok">OK</span> <span class="small">' + esc(t("matrix.ok")) + "</span>"
+        : '<span class="tag st-bad">' + esc(t("matrix.refuse")) + "</span> <span class=\"small\">" + esc(compiled.issues[0].code) + "</span>";
+      tr.innerHTML =
+        "<td><code>" + esc(row.route.id) + "</code></td><td>" + esc(tl(row.from)) + "</td><td>" + esc(tl(row.to)) + "</td>" +
+        "<td>" + (cross ? '<span class="tag st-warn">' + esc(t("matrix.yes")) + "</span>" : esc(t("matrix.no"))) + "</td>" +
+        "<td>" + (row.route.contentOwner === "third-party" ? '<span class="tag st-warn">third-party</span>' : "self") + "</td>" +
+        "<td>" + resultCell + "</td>";
+      body.appendChild(tr);
+    });
+  }
+
+  // ── ④ 编辑器 ──────────────────────────────────────────────────────────
+  var PLATFORMS = ["wechat", "qq", "telegram"];
+  function selectHtml(field, value, options) {
+    return '<select data-field="' + field + '">' + options.map(function (option) {
+      return '<option value="' + option + '"' + (option === value ? " selected" : "") + ">" + option + "</option>";
+    }).join("") + "</select>";
+  }
+  function renderEditor() {
+    var body = $("editor-body");
+    body.textContent = "";
+    state.editor.forEach(function (route, index) {
+      var tr = document.createElement("tr");
+      tr.setAttribute("data-index", String(index));
+      tr.innerHTML =
+        '<td><input type="text" data-field="id" value="' + esc(route.id) + '" /></td>' +
+        '<td><input type="text" data-field="group" value="' + esc(route.group) + '" /></td>' +
+        '<td><select data-field="owner">' + ["self", "third-party"].map(function (option) { return '<option value="' + option + '"' + (option === route.contentOwner ? " selected" : "") + ">" + option + "</option>"; }).join("") + "</select></td>" +
+        '<td class="conv"><div class="conv-row">' + selectHtml("from.platform", route.from.platform, PLATFORMS) + '<input type="text" data-field="from.conversationId" value="' + esc(route.from.conversationId) + '" />' + selectHtml("from.chatType", route.from.chatType, ["private", "group"]) + "</div></td>" +
+        '<td class="conv"><div class="conv-row">' + selectHtml("to.platform", route.to[0].platform, PLATFORMS) + '<input type="text" data-field="to.conversationId" value="' + esc(route.to[0].conversationId) + '" />' + selectHtml("to.chatType", route.to[0].chatType, ["private", "group"]) + "</div></td>" +
+        '<td><button type="button" class="btn-danger" data-remove="' + index + '">✕</button></td>';
+      body.appendChild(tr);
+    });
+    renderEditorResult();
+  }
+  function renderEditorResult() {
+    var compiled = P.compileMatrix(state.editor, { gate: state.gate || { enabled: false }, consentEnabled: false, loopGuardEnabled: true });
+    var issues = compiled.issues.length
+      ? '<ul class="issues">' + compiled.issues.map(function (issue) {
+          return '<li><code>' + esc(issue.code) + "</code> " + esc(tl(issue.message)) + "</li>";
+        }).join("") + "</ul>"
+      : '<p class="ok-line">' + esc(t("editor.noIssues")) + "</p>";
+    var stats = '<span class="stat">routes: ' + compiled.stats.routes + "</span>" +
+      '<span class="stat">edges: ' + compiled.stats.edges + "</span>" +
+      '<span class="stat">groups: ' + compiled.stats.groups + "</span>" +
+      '<span class="stat">cycles: ' + compiled.cycles.length + "</span>" +
+      '<span class="stat">cross-border: ' + compiled.stats.crossBorder + "</span>" +
+      '<span class="stat">third-party: ' + compiled.stats.thirdParty + "</span>";
+    $("editor-result").innerHTML =
+      '<div class="result-head"><span class="tag ' + (compiled.ok ? "st-ok" : "st-bad") + '">' + esc(t("editor.exit")) + "：EXIT " + compiled.exitCode + "</span>" +
+      "<h3>" + esc(t("editor.result")) + "：(" + compiled.issues.length + " " + esc(t("editor.issues")) + ")</h3></div>" +
+      issues + '<div class="stats">' + stats + "</div>" +
+      (state.editor.length === 0 ? '<p class="hint small">' + esc(t("editor.empty")) + "</p>" : "");
+  }
+  $("editor-body").addEventListener("input", function (event) {
+    var target = event.target;
+    var field = target.getAttribute("data-field");
+    if (!field) return;
+    var tr = target.parentElement;
+    while (tr && tr.tagName !== "TR") tr = tr.parentElement;
+    var index = Number(tr.getAttribute("data-index"));
+    var route = state.editor[index];
+    var value = target.value;
+    var parts = field.split(".");
+    if (parts.length === 1) route[parts[0]] = value;
+    else if (parts[0] === "from") route.from[parts[1]] = value;
+    else route.to[0][parts[1]] = value;
+    renderEditorResult();
+    renderMatrix();
   });
+  $("editor-body").addEventListener("change", function (event) {
+    if (event.target.getAttribute("data-field")) {
+      var clone = { bubbles: true };
+      event.target.dispatchEvent(new Event("input", clone));
+    }
+  });
+  $("editor-body").addEventListener("click", function (event) {
+    var index = event.target.getAttribute("data-remove");
+    if (index === null) return;
+    state.editor.splice(Number(index), 1);
+    renderEditor();
+    renderMatrix();
+  });
+  $("editor-add").addEventListener("click", function () {
+    var n = state.editor.length + 1;
+    state.editor.push({
+      id: "route-" + n,
+      group: "group-" + n,
+      contentOwner: "self",
+      from: { platform: "wechat", conversationId: "wxid_demo_" + n, chatType: "private" },
+      to: [{ platform: "qq", conversationId: "1000" + n, chatType: "private" }],
+    });
+    renderEditor();
+    renderMatrix();
+  });
+  $("editor-reset").addEventListener("click", function () { state.editor = P.defaultEditorRoutes(); renderEditor(); renderMatrix(); });
+  $("editor-clear").addEventListener("click", function () { state.editor = []; renderEditor(); renderMatrix(); });
 
-  function escapeHtml(value) {
-    return String(value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
+  // ── 全局绑定 ──────────────────────────────────────────────────────────
+  $("lang-toggle").addEventListener("click", function () {
+    state.lang = state.lang === "zh" ? "en" : "zh";
+    applyI18n();
+  });
+  $("gate-form").addEventListener("input", function () { readGate(); renderGate(); renderMatrix(); renderEditorResult(); });
+  $("gate-form").addEventListener("change", function () { readGate(); renderGate(); renderMatrix(); renderEditorResult(); });
 
-  // 默认展示第一个场景，便于访客秒懂
-  const first = list.querySelector("button");
-  if (first) first.click();
+  readGate();
+  applyI18n();
+  state.scenario = P.scenarios[0];
+  renderScenarios();
+  renderScenario(P.scenarios[0]);
 })();
 </script>
 </body>

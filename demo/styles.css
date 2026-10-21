@@ -137,3 +137,39 @@ main { padding-bottom: 10px; }
   .matrix th:nth-child(4), .matrix td:nth-child(4),
   .matrix th:nth-child(5), .matrix td:nth-child(5) { display: none; }
 }
+
+/* ── v0.2.2：语言切换 / 矩阵编辑器 / 截图预览 ─────────────────────────── */
+.top-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.lang-btn { appearance: none; border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.08); color: #eef6f2; border-radius: 999px; padding: 5px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.lang-btn:hover { background: rgba(255,255,255,0.18); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.btn, .btn-primary, .btn-danger { appearance: none; border-radius: 8px; padding: 7px 13px; font-size: 13.5px; cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+.btn:hover { border-color: #b9c9d4; }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-danger { color: var(--bad); border-color: #eccfcf; background: var(--bad-soft); padding: 4px 9px; }
+.btn-danger:hover { background: #f7dcdc; }
+
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+.table-scroll table { border: none; border-radius: 0; }
+.editor { width: 100%; border-collapse: collapse; font-size: 13px; }
+.editor th, .editor td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+.editor th { background: #f0f4f7; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.editor input[type="text"], .editor select { border: 1px solid var(--line); border-radius: 6px; padding: 5px 7px; font: inherit; font-size: 12.5px; background: #fbfcfd; color: var(--ink); }
+.editor input[type="text"] { width: 130px; }
+.editor .conv-row { display: flex; gap: 5px; align-items: center; }
+.editor .conv-row input[type="text"] { width: 120px; }
+.editor select { padding-right: 4px; }
+
+.issues { margin: 8px 0 12px; padding-left: 20px; }
+.issues li { color: var(--bad); margin: 4px 0; font-size: 13.5px; }
+.issues code { background: var(--bad-soft); color: var(--bad); }
+.stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.stat { font-family: var(--mono); font-size: 12px; color: var(--muted); background: #eef2f5; border-radius: 999px; padding: 2px 9px; }
+
+.shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.shots figure, .gif { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.shots img, .gif img { display: block; width: 100%; height: auto; }
+.shots figcaption, .gif figcaption { padding: 8px 12px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+.gif { max-width: 860px; }

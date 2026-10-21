@@ -471,3 +471,11 @@ B 模式额外**拒绝**：Telegram 出境路由、third-party 路由、群聊�
   平台侧的访问统计不由本项目控制，本项目也不额外埋点。
 - **与源码的关系**：`demo/policy-demo.js` 是 `src/routing/policy.ts` 的简化镜像，
   CI 执行 `node demo/policy-demo.test.mjs` 自检；两者若有差异，以源码与测试为准。
+
+### 12.1 界面配图的来源与边界
+
+- README / Demo 中的桌面端截图与动图，由 `apps/desktop/scripts/capture-main.cjs`
+  以 **Electron 离屏渲染 + mock preload** 生成：真实 UI、固定演示数据，
+  不连接网关、不读取真实配置、不使用任何令牌；
+- 图片为静态资源，存放在 `demo/images/`，不含个人信息；
+- 重新生成命令（需要本机 Electron）：`npm --prefix apps/desktop run capture`。

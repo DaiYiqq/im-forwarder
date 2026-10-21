@@ -9,12 +9,20 @@ versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Online demo v2: EN/中文 switch (91 bilingual keys, in-memory only), interactive routing-matrix
+  editor with live compile (self-loop, duplicates, group conflicts, cycles, cross-border gate,
+  third-party consent), and a screenshots tab.
+- Real desktop UI screenshots + animated GIF (`demo/images/`) captured from the actual Electron
+  renderer via `apps/desktop/scripts/capture-main.cjs` (offscreen render + mock preload; no real
+  data or tokens).
 - Static online demo (GitHub Pages) at <https://daiyiqq.github.io/im-forwarder/>: compliance-gate
   decision chain, cross-border gate playground, routing matrix and a mock companion console.
   Pure front-end, no backend, no network calls, no data collection; CI enforces these properties
   and runs the policy-mirror self-test before deploying.
 
 ### Fixed
+- Desktop renderer: the companion port input was written through the wrong helper
+  (`text(...).value`), which threw and aborted the rest of the companion panel rendering.
 - Release pipeline publishes only installer artifacts (no unpacked application trees) and writes
   `SHA256SUMS.txt` over top-level files; the published `v0.2.0` assets were corrected accordingly.
 

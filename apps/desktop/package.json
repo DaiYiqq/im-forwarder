@@ -4,7 +4,7 @@
   "private": true,
   "description": "im-forwarder 桌面端（Electron）：托盘常驻、配置校验、状态/日志/合规面板与移动伴生控制 API",
   "license": "SEE LICENSE IN ../../LICENSE",
-  "author": "戴轶 (DaiYi) <1703205607@qq.com> (https://github.com/DaiYiqq)",
+  "author": "戴亿 (DaiYi) <1703205607@qq.com> (https://github.com/DaiYiqq)",
   "homepage": "https://github.com/DaiYiqq/im-forwarder",
   "main": "dist/main.cjs",
   "engines": {
@@ -16,6 +16,7 @@
     "build:core": "node scripts/build-core.mjs",
     "icon": "node scripts/make-icon.mjs",
     "build": "npm run icon && npm run build:core",
+    "capture": "electron scripts/capture-main.cjs",
     "start": "npm run build && electron .",
     "smoke": "npm run build && electron . --smoke",
     "dist:win": "npm run build && electron-builder --win nsis portable --x64 --publish never",
@@ -28,6 +29,7 @@
     "electron": "^44.9.1",
     "electron-builder": "^26.15.3",
     "esbuild": "^0.28.2",
+    "gifenc": "^1.0.3",
     "typescript": "^5.7.2"
   }
 }
