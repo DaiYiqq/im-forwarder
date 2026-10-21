@@ -1,6 +1,6 @@
 {
   "name": "im-forwarder-desktop",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "im-forwarder 桌面端（Electron）：托盘常驻、配置校验、状态/日志/合规面板与移动伴生控制 API",
   "license": "SEE LICENSE IN ../../LICENSE",

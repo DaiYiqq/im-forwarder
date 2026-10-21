@@ -1,6 +1,6 @@
 {
   "name": "@im-forwarder/companion-web",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "im-forwarder 移动伴生控制端：桌面端伴生 API 的 PWA 控制台，同时作为 Android WebView 与 Capacitor 的共享 Web 应用",

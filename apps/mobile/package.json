@@ -1,6 +1,6 @@
 {
   "name": "@im-forwarder/mobile",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "im-forwarder 移动端外壳：Capacitor Android/iOS 工程，WebView 加载 apps/companion-web 构建产物",

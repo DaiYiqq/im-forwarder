@@ -259,7 +259,7 @@ jobs:
           node scripts/ci/verify-artifacts.mjs --platform android \
             --src apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk \
             --out dist/android \
-            --rename "im-forwarder-0.2.0-android-debug.apk"
+            --rename "im-forwarder-$(node -p "require('./apps/mobile/package.json').version")-android-debug.apk"
       - uses: actions/upload-artifact@v4
         with:
           name: android-apk

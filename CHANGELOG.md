@@ -6,6 +6,22 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 > Reminder: this project is **non-commercial**. See [LICENSE](LICENSE).
 
+## [0.2.1] - 2026-10-21
+
+Patch release: **the desktop installer now contains the companion-panel fix** and the online demo /
+documentation were refreshed. No configuration or protocol changes.
+
+### Fixed
+- Desktop renderer: `renderCompanion` wrote the port input through the wrong helper
+  (`text(...).value`), which threw and aborted the rest of the companion panel rendering
+  (LAN toggle / warning / error states never updated). The v0.2.0 binaries contain this bug;
+  v0.2.1 rebuilds all installers from the fixed source.
+
+### Added (docs/demo only, not shipped in the installers)
+- Online demo v2: EN/中文 switch, interactive routing-matrix editor with live compile, and a
+  screenshots tab with real desktop captures + animated GIF (`demo/images/`).
+- README (4 languages): UI preview section; COMPLIANCE 12.1 documents screenshot provenance.
+
 ## [Unreleased]
 
 ### Added

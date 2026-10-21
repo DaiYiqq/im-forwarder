@@ -1,6 +1,6 @@
 {
   "name": "im-forwarder",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "description": "微信(iLink/ClawBot) <-> QQ(NapCat) <-> Telegram(Bot API) 三平台消息转发路由服务（仅供技术研究学习，禁止商业用途）",
