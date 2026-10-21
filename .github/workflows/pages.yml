@@ -1,0 +1,62 @@
+name: pages
+
+# 在线 Demo 部署（GitHub Pages，纯静态）
+#
+# 边界：
+#  · 只发布 demo/ 目录里的静态文件（HTML/CSS/JS），没有后端、没有密钥；
+#  · Demo 不连接任何平台、不读取真实配置、不发送消息、不收集数据；
+#  · 与安装包流水线（release.yml）完全独立。
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "demo/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: deploy-demo
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Static sanity checks (no backend, no tokens)
+        run: |
+          set -euo pipefail
+          test -f demo/index.html
+          test -f demo/styles.css
+          test -f demo/policy-demo.js
+          # 演示页面不得出现平台凭据类字段，也不得发起非静态请求
+          if grep -EIn "bot_token|ilink_user_id|api_hash|session_string|telethon|pyrogram|mtproto" demo/index.html demo/policy-demo.js; then
+            echo "::error::demo contains forbidden credential/login identifiers"
+            exit 1
+          fi
+          if grep -EIn "fetch\\(|XMLHttpRequest|WebSocket\\(" demo/index.html demo/policy-demo.js; then
+            echo "::error::demo must not perform network requests"
+            exit 1
+          fi
+          echo "demo static sanity checks passed"
+
+      - name: Policy mirror self-test
+        run: node demo/policy-demo.test.mjs
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo
+      - id: deployment
+        uses: actions/deploy-pages@v4

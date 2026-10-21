@@ -6,6 +6,9 @@
 [![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 ![Node](https://img.shields.io/badge/node-%E2%89%A520-brightgreen)
 
+> 🧪 **オンラインデモ（静的・バックエンドなし）**：https://daiyiqq.github.io/im-forwarder/
+> コンプライアンスゲートの判定チェーン・越境ゲート・ルーティングマトリクスを体験できます。プラットフォーム接続・メッセージ送信・データ収集は一切ありません。実際の転送にはデスクトップ版と自前の EasyBot ゲートウェイが必要です。
+
 > ## ⚠️ 非商用限定 — 有料サービス・有料ホスティング禁止
 >
 > 本プロジェクトは**技術研究および個人学習のみ**を目的としています。

@@ -8,6 +8,16 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Static online demo (GitHub Pages) at <https://daiyiqq.github.io/im-forwarder/>: compliance-gate
+  decision chain, cross-border gate playground, routing matrix and a mock companion console.
+  Pure front-end, no backend, no network calls, no data collection; CI enforces these properties
+  and runs the policy-mirror self-test before deploying.
+
+### Fixed
+- Release pipeline publishes only installer artifacts (no unpacked application trees) and writes
+  `SHA256SUMS.txt` over top-level files; the published `v0.2.0` assets were corrected accordingly.
+
 ### Planned
 - Optional plain-text prefix per route (opt-in, off by default) — pending RFC.
 - Additional languages (한국어 / Deutsch / Español) — see [TRANSLATIONS.md](TRANSLATIONS.md).

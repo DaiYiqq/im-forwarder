@@ -6,6 +6,9 @@
 [![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 ![Node](https://img.shields.io/badge/node-%E2%89%A520-brightgreen)
 
+> 🧪 **在线 Demo（纯静态、无后端）**：https://daiyiqq.github.io/im-forwarder/
+> 演示合规闸门决策链、出境闸门与路由矩阵 —— 不连接任何平台、不发送消息、不收集数据。真实转发需桌面端 + 你自己的 EasyBot 网关。
+
 > ## ⚠️ 禁止用于商业场景、收费服务或付费托管
 >
 > 本项目**仅供技术研究与个人学习**。

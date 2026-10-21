@@ -6,6 +6,9 @@
 [![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 ![Node](https://img.shields.io/badge/node-%E2%89%A520-brightgreen)
 
+> 🧪 **線上 Demo（純靜態、無後端）**：https://daiyiqq.github.io/im-forwarder/
+> 示範合規閘門決策鏈、出境閘門與路由矩陣 —— 不連接任何平台、不傳送訊息、不蒐集資料。實際轉發需桌面端 + 你自己的 EasyBot 閘道。
+
 > ## ⚠️ 禁止用於商業場景、收費服務或付費託管
 >
 > 本專案**僅供技術研究與個人學習**。

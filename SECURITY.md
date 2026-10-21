@@ -137,3 +137,12 @@ we cannot police third-party deployments.
 - Android APK is a **debug-signed sideload** build; it is not distributed via app stores.
 - The experimental on-device mode is a strict subset (no Telegram, no third-party content, no groups,
   no media, foreground only). Reports about "it stops in the background" are expected behaviour.
+
+### Demo site (GitHub Pages)
+
+- The online demo at <https://daiyiqq.github.io/im-forwarder/> is **static**: no backend, no network
+  requests (CI greps for `fetch(` / `XMLHttpRequest` / `WebSocket(`), no credentials, no analytics,
+  no storage of visitor input.
+- Hosting is provided by GitHub Pages; the project adds no tracking of its own. Hosting-platform
+  issues belong to GitHub.
+- Out of scope by design: anything that would require the demo to actually forward messages.

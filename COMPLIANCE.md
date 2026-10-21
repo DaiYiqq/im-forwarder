@@ -458,3 +458,16 @@ B 模式额外**拒绝**：Telegram 出境路由、third-party 路由、群聊�
 2. 伴生服务开启局域网时，确认所处网络可信；
 3. 移动端不得用于"未取得同意的他人内容转发"（移动端本就不支持该类路由）；
 4. 仍须自行完成第 38/39 条与第 55/56 条（若开启出境路由）。
+
+---
+
+## 12. 在线 Demo 的数据边界（v0.2.1 起）
+
+- **地址**：https://daiyiqq.github.io/im-forwarder/ （GitHub Pages，纯静态）
+- **数据面**：页面不发起任何网络请求（CI 以 grep 禁止 `fetch(` / `XMLHttpRequest` / `WebSocket(`）；
+  不读取令牌或配置；不写 localStorage / IndexedDB；不埋点、不收集访客数据；不接入任何平台。
+- **内容面**：所有场景为内置假数据；示例日志只含白名单字段；**Demo 不能转发任何消息**。
+- **托管边界**：GitHub Pages 属于第三方静态托管；页面本身不含个人信息，
+  平台侧的访问统计不由本项目控制，本项目也不额外埋点。
+- **与源码的关系**：`demo/policy-demo.js` 是 `src/routing/policy.ts` 的简化镜像，
+  CI 执行 `node demo/policy-demo.test.mjs` 自检；两者若有差异，以源码与测试为准。

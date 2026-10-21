@@ -6,6 +6,9 @@
 [![License: MIT + Commons Clause](https://img.shields.io/badge/license-MIT%20%2B%20Commons%20Clause-blue.svg)](LICENSE)
 ![Node](https://img.shields.io/badge/node-%E2%89%A520-brightgreen)
 
+> 🧪 **Live demo (static, no backend)**: https://daiyiqq.github.io/im-forwarder/
+> Walk through the compliance-gate decision chain, the cross-border gate and the routing matrix — no platform connection, no messages sent, no data collected. Real forwarding needs the desktop app plus your own EasyBot gateway.
+
 > ## ⚠️ Non-commercial use only — no paid services, no paid hosting
 >
 > This project is **for technical research and personal learning only**.
